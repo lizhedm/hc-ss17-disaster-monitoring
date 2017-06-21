@@ -1,5 +1,5 @@
 all:
-	latexmk -pdf main.tex
+	latexmk -xelatex main.tex
 	make clean
 
 clean:
