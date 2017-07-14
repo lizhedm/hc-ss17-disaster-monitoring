@@ -1,7 +1,50 @@
 \section{System Evaluation and Success Criteria}
 
-\subsection{Limitation of the System}
 \subsection{Evaluation and success criteria}
   \subsubsection{Model Evaluation}
-  \subsubsection{Issues on Social Aspects}
-  \subsubsection{Issues on Ethical Aspects}
+
+  Malicious player detection is a classification problem. 
+  One can generate random data and test the Rating Model through accuracy and recall, even ROC curve \cite{hanley1982meaning}.
+
+  The click behavior has been researched for years and address by FFitts Law \cite{bi2013ffitts}.
+  It modeled and proved the distribution of click behavior for a certain click goal point is a normal distribution.
+  Thus, with probablistic view, the top left corner of ROI exists, then the user click selection 
+  for this point should follows normal distribution, as shown in figure \ref{fig:evaluation}.
+
+  \begin{figure}[htp]
+  \centering
+  \includegraphics[width=0.5\columnwidth]{figures/evaluation}
+  \caption{Data Simulation}
+  \label{fig:evaluation}
+  \end{figure}
+
+  Therefore, to generate ROIs, let $(x, y)$ is the player ROI start point,  $(H_{ROI}$, $W_{ROI})$ is the height
+  and width pair of this ROI, then we generate the random dataset for these variables by a given
+  parameter $\delta$: $(x, y) \sim (x+N(0, \delta), y+N(0, \delta)), (H_{ROI}, W_{ROI}) \sim (H_{ROI}+N(0, \delta), W_{ROI}+N(0, \delta))$.
+  To generate tags, we propose randomly pick random number of tags.
+
+  Then once can perform this random dataset on our system to evaluate the classification accuracy and recall rate to
+  evaluate the overall performance of this system.
+
+  \subsubsection{Issues on Social and Ethical Aspects}
+
+\subsection{Limitation of the System}
+
+\subsubsection{Evaluation Outdate}
+
+A limitation occurs in our social network based model is each disaster level evaluation get invalid 
+if the region image outdate. 
+We assume the satellite monitors a region and take picutre between intervals. However, our evaluation
+model only calculate the disaster level in a unique moment, which means the disaster level need 
+transvaluation when a new image come out.
+If our player are not enough so that the region images always have to wait new evaluation, then the
+disaster level will never be calculated.
+
+A possible solution is to consider the region disaster level history as a time series. Then we can apply
+some prediction method for it. For instance, we have time series: $(t_1, t_2, t_3, ..., t_n)$
+and its corresponding disaster level: $(DL_1, DL_2, DL_3, ..., DL_n)$.
+Then we can use these time series to predict the disaster level at time $t_(n+1)$.
+
+At the same time, we also have the historical data of trust value of a player. We can also
+use time series prediction to predict the players trust value. But in all of these, the time series
+of disaster level is not stationary but the time series of trust value is stationary.

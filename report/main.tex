@@ -1,20 +1,22 @@
-% A4 paper and 11pt font size
 \documentclass[paper=a4, fontsize=11pt]{scrartcl}
-% Use 8-bit encoding that has 256 glyphs
 \usepackage[T1]{fontenc}
-% Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
 \usepackage{fourier} 
-% English language/hyphenation
 \usepackage[english]{babel} 
+
 % Math packages
 \usepackage{amsmath,amsfonts,amsthm} 
-% Allows customizing section commands
+\newtheorem{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\usepackage[ruled,vlined]{algorithm2e}
+
+\usepackage{hyperref}
 \usepackage{sectsty} 
-% Make all sections centered, the default font and small caps
 \allsectionsfont{\centering \normalfont\scshape} 
-% Custom headers and footers
 \usepackage{fancyhdr} 
- % Makes all pages in the document conform to the custom headers and footers
 \pagestyle{fancyplain}
 \fancyhead{} % No page header - if you want one, create it in the same way as the footers below
 \fancyfoot[L]{} % Empty left footer
@@ -23,13 +25,10 @@
 \renewcommand{\headrulewidth}{0pt} % Remove header underlines
 \renewcommand{\footrulewidth}{0pt} % Remove footer underlines
 \setlength{\headheight}{13.6pt} % Customize the height of the header
-% Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\setlength{\parskip}{0.5\baselineskip}
 \numberwithin{equation}{section}
-% Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
 \numberwithin{figure}{section} 
-% Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
 \numberwithin{table}{section}
-% Removes all indentation from paragraphs - comment this line for an assignment with lots of text
 \setlength\parindent{0pt}
 \usepackage{xcolor}
 \usepackage{graphicx}
@@ -53,6 +52,7 @@
   rulesepcolor={\color{blue!20!white}},
   showspaces=false,
 }
+% \renewcommand{\lstlistingname}{Code}
 \newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
 
 \title{	
@@ -80,15 +80,14 @@ A Novel GWAPs Disaster Monitoring System\\
 
 Abstract test
 
-
-\include{introduction}
-\include{functionality}
-\include{design}
-\include{evaluation}
-\include{future}
+\input{introduction}
+\input{functionality}
+\input{design}
+\input{evaluation}
+\input{future}
 
 \nocite{*}
-\bibliographystyle{plain}
+\bibliographystyle{ieeetr}
 \bibliography{ref}
 
 \end{document}

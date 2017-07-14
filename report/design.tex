@@ -1,33 +1,35 @@
 \section{System Design}
 
+In this section we describes the overall design of our disaster monitoring backend system design.
+
 \subsection{System Architectures}
+
+  \begin{figure}[htp]
+  \centering
+  \includegraphics[width=\textwidth]{figures/system2}
+  \caption{System Design Overview}
+  \label{fig:arch}
+  \end{figure}
 
   The system contains two different type of databases. The first databases \textbf{PlayerDB}
   combines with \textbf{TrustedDB} and \textbf{UntrustedDB} where
   presistent the player inputs whether the overall result is reliable or not. 
+  We designed a task generator that combines 
+  trusted results and seperate new satellite area images assign to upcomming players. 
   A reliable player shall pass the system \textbf{Player Rating Model}. 
   Once the task result from new player is reliable, then the system will
   reuse the player input into our \textbf{Disaster Evalutation Model} and presistent it in the second
   database \textbf{ResultDB}. Stakeholder make querys to this monitoring database. 
   Figure \ref{fig:arch} illustrate the overall disaster system design.
 
-    \begin{figure}[htp]
-    \centering
-    \includegraphics[width=\textwidth]{figures/system2}
-    \caption{System Design Overview}
-    \label{fig:arch}
-    \end{figure}
-
-  The most important issue of this human computation system is to solve weather the input of player 
-  is trustable or not. To solve this problem, we designed a \textbf{Task Generator} that combines 
-  trusted results and seperate new satellite images to players. 
+  
 
 \subsection{System Components}
 
 \subsubsection{Database Fields}
 
   For the convinience of model establishment, we describe the system database PlayerDB 
-  Fields as well as the fields of database ResultDB in the follows listing \ref{lst:playerdb}
+  fields as well as the fields of database ResultDB in the follows listing \ref{lst:playerdb}
   and \ref{lst:resultdb}:
 
 \noindent\begin{minipage}{.45\textwidth}
@@ -43,7 +45,7 @@
   "tasks": [
    {
     "image": image_path,
-    "at_time": time, 
+    "at": time, 
     "ROI": [
      {
       "latitude": number,
@@ -68,7 +70,7 @@
   "disaster_level": number,
   "history": [
    {
-    "at_time": time,
+    "at": time,
     "image": image_path,
     "ROI": [
      {
@@ -86,10 +88,16 @@
 \end{minipage}
 
   In this disaster monitoring system, our participant do not need to register an account,
-  and the system shall assign a anonymous\_id for each participant which significantly 
-  accelerate 
+  and the system shall assign a anonymous\_id for each player, this function significantly 
+  accelerate player to particpate to this game. Thus, the PlayerDB stores the anonymous\_id
+  to detect the same players if they participate next time. The player will accomplish different
+  game tasks, each task result shall stores in the tasks filed.
 
-  Then we give some basic definition for the system model.
+  In the ResultDB, an area ID is unique, and assigned by our system, the disaster\_level field
+  represents the level of this area. Each area shall be evaluated by our player, and the evaluation
+  history stores in history field.
+
+  To explain other fileds, we describe few basic definition for the system model.
 
   \begin{definition}
   \label{def:roi}
@@ -115,7 +123,7 @@
   \begin{definition}
   \label{def:weightv}
   The \textbf{weight vector} $v = (p(\text{tag}_1), p(\text{tag}_2), ..., p(\text{tag}_n))$ \textbf{of all tags} 
-  can be calculated by the following equation \ref{ptag}:
+  can be calculated by the following equation \ref{eq:ptag}:
   \begin{equation}
   \label{eq:ptag}
   p(\text{tag}_i) = \frac{|\text{tag}_i|}{\sum_{j=1}^{n}{|\text{tag}_j|}}
@@ -140,11 +148,7 @@
   half of untagged images and half of tagged images.
 
   In short, The Data Model (only ouput here) for PTG is:
-
-  \[
-  \{(\text{areaID}_1, \text{time}_1), ..., (\text{areaID}_n, \text{time}_n)\}
-  \]
-
+  $\{(\text{areaID}_1, \text{time}_1), ..., (\text{areaID}_n, \text{time}_n)\}$
   with $\text{areaID}_1$ to $\text{areaID}_{\floor{n}}$ are from satellite and 
   $\text{areaID}_{\floor{n}+1}$ to $\text{areaID}_{n}$ are from \textbf{ResultDB}.
 
@@ -233,7 +237,7 @@
   should be the performance base.
 
   The third part $\frac{Cov(T_i, T_j; v)}{Cov(T_i, T_i; v)\times Cov(T_j, T_j; v)}$
-  of formula \ref{eq:weight} is applied by Weighted Pearson Correlation Coefficient. 
+  of formula \ref{eq:weight} is applied by Weighted Pearson Correlation Coefficient.
   
   To calculate the eigenvalue of the ajacency matrix of PRG, one can use the normalized ajacency matrix 
   through the following formula \ref{eq:normalize}:
@@ -243,14 +247,14 @@
   \end{equation}
 
   \begin{theorem}
-  Matrix A is irreducible, real, non-negative, column-stochastic, and diagonal element being positive.
+  Matrix $A$ is irreducible, real, non-negative, column-stochastic, and diagonal element being positive.
   \end{theorem}
 
   \begin{proof}
-  \textbf{Irreducibility}: A is normalized through an ajacency matrix of a strong connected player
-  rating graph, which proofs A is irreducible.
+  \textbf{Irreducibility}: $A$ is normalized through an ajacency matrix of a strong connected player
+  rating graph, which proves $A$ is irreducible.
 
-  \textbf{Real elements}: trivial.
+  \textbf{Real elements}: Trivial.
   
   \textbf{Non-negative elements}: We only need to prove $\text{TV}_i$, 
     $\frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}$ and 
@@ -288,100 +292,112 @@
   A \textbf{Trust Value} $TV_i$ of player $i$ represents by the $i$-th eigenvalue of normalized PRG ajacency matrix $A$
   \end{definition}
 
-  This definition can represents the rating score from $i$ to $j$.
+  This definition can represents the rating score from $i$ to $j$. With the trust value of players,
+  we propose our classification algorithm:
+
+  \begin{algorithm}[H]
+  \SetAlgoLined
+  \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+  \Input{anonymous IDs, TVs}
+  \Output{(anonymous\_id, isReliable)}
+  Calculate $TV_{new}$ as the trust value of player $new$ \;
+  \eIf{$TV_{new} \geq \frac{1}{|\text{players}|}\sum_{i\in \text{players}}{TV_{i}}$}{
+    return $(\text{anonymous\_id}, \text{true})$
+  }{
+    return $(\text{anonymous\_id}, \text{false})$
+  }
+  \caption{Player Classification Algorithm}
+  \end{algorithm}
+
+  In this algorithm, the criterion of classify new players performs the action that 
+  the trust value of new player should not less than the mean value of overall trust value of players, 
+  which means the tagging performance of new player should not worth than result performance of former players.
   
-  Note that:
-
-  \begin{itemize}
-    \item $(anonymous\_id, image, event\_time, ROI)$ is the primary key of the input vector;
-    \item A player can generate multiple vectors to rating system even for same image;
-    \item The event\_time is the capture time of the satellite image.
-  \end{itemize}
-
-  Terefore eigenvalue of A is the player trust value. When a new player tagging task need to be rated,
-
-  \begin{itemize}
-    \item which means we need introduce a new node to the graph
-    \item need calculate the trust value of new graph
-    \item let $t’$ is the trust value of new player
-    \item if $t’ >= \text{mean}(\text{old\_eigenvalues})$, then it is a reliable player, otherwise drop it.
-  \end{itemize}
-
-  In short, the input and output Data Model of PRM are as follows. For input:
-
-  \[
-    (\text{anonymous\_id}, \text{area\_id}, \text{time}, \text{ROIs}, \text{tags})
-  \]
-
+  Terefore in short, the input and output Data Model of PRM are as follows. For input:\\
+  $(\text{anonymous\_id}, \text{area\_id}, \text{time}, \text{ROIs}, \text{tags})$; 
   For model output: 
-  
-  \[
-  (\text{anonymous\_id}, \text{TV})
-  \]
+  $(\text{anonymous\_id}, \text{TV})$.
 
   \subsubsection{Disaster Evaluation Model}
+
+  For an area at time $t$, we address the \textbf{Disaster Evaluation Model (DEM)} 
+  via disaster level definition as follows:
+
+  \begin{definition}
+  \label{def:dl}
+  The \textbf{Disaster Level (DL)} of a monitor region is calculated by each area components:
+  \[
+    DL = \sum_{\text{area}\in\text{region}}{DL_{\text{area}}}
+  \]
+  where $DL_{\text{area}}$ is calculated by its corresponding tag vector:
+  \[
+    DL_{\text{area}} = \sum_{i=1}^{n}{v_i \times |\text{tag}_i|}
+  \]
+  with $n$ is the number of current exist tags, and $|\text{tag}_i|$ is the occurrance of $\text{tag}_i$
+  in the corresponding area.
+  \end{definition}
 
   System like ESP\cite{von2004labeling}, ARTigo\cite{wieser2013artigo} has proved that 
   human inputs are valuable and useful.
 
-    For an area at time t, define disaster level as follows:
+  Note that sometimes player carries new tags for our system, we also address a solution 
+  for this issue via the following steps:
 
-    \[
-    v_{area} = \frac{
-    \sum_{\text{tag}\in\text{tags}}
-      {w_{tag}\times\#(\text{tag})}
-    }
-    {\sum_{area\in areas}{\sum_{\text{tag}\in\text{tags}}{w_{tag}\times\#(\text{tag})}}}
-    \]
+  \begin{itemize}
+  \item When a player carries predefined tags: Trivial;
+  \item When a player carries new tags: Directly drop, it is an unreliable result;
+  \item When a player carries predefined tags and also new tags: calculate the trust value without new tags;
+   merge and update all weight vector $v$ via formula \ref{eq:weight} if the player is reliable, 
+   otherwise drop and mark the result is unreliable.
+  \end{itemize}
 
-    where $w_{tag}$ is pre-defined weight by system, $\#(tag)$ is the occur number of a tag.
+  With this definition \ref{def:dl}, we can calculate the disaster level for a monitoring region.
+  To sum up, the input and the output Data Model of DEM addresse as follows. For input:
+  $(\text{time})$, $(\text{area\_id})$ or $(\text{area\_id}, \text{time})$; For output:
+  $(\text{area\_id}, \text{time}, \text{disaster\_level})$.
 
-    Return value:
+  \subsubsection{Model Initialization}
 
-    \begin{itemize}
-      \item disaster region: $\cup_{ROI\in ROIs}{ROI}$
-      \item disaster level: $v_{area}$
-    \end{itemize}
+  A cold start of such a system is a common problem in human computation system that 
+  is avoided by hiring people to play or learn as long as 
+  the number of users or the quantity of data is insufficient.
+  In our system, we have two different cold start problem.
 
+  The first cold start problem appears in the PTG. To initialize the whole system, we need
+  address a initial trusted group for PTG, they shall tagging ennough initial trusted result
+  for PTG and then assign to new upcomming players. When a new player is reliable,
+  then the result of this player will become reliable. Meanwhile, the trusted group and avaliable 
+  dataset become larger with this step repeatedly, as shown in figure \ref{fig:cold}.
 
-    For query input:
+  \begin{figure}[htp]
+  \centering
+  \includegraphics[width=0.5\columnwidth]{figures/coldstart}
+  \caption{Cold Start of PTG}
+  \label{fig:cold}
+  \end{figure}
 
-    \[
-    (\text{time}) or (\text{area\_id})/(\text{area\_id}, \text{time})
-    \]
+  The second cold start problem appears in PRM. According to the definition \ref{def:weight} of PRG, the weight
+  of PRG was defined by the trust value of all players. Nevertheless the initial trusted group has
+  no trust value. Thus we need a initial value for $TV$. Note that TV\_i is in between of 0 and 1, thus:
 
-    For model output:
+  \[
+  TV_{i}^{\text{init}} = \frac{1}{|\text{players}^{\text{init}}|}
+  \]
 
-    \[
-    (\text{area\_id}, \text{time}, \text{disaster\_level})
-    \]
+  with $|\text{players}^{init}|$ is the number of initial trusted group. 
 
-    Note that:
+  \paragraph{Summary}
 
-    \begin{itemize}
-      \item All results are evaluated from reliable tasks
-      \item Evaluation Model generated by all reliable history
-    \end{itemize}
+  We have described our monitoring system in general and also detailed. It contains the following components:
 
-    Now we have trusted results, each area has its tagging history.
+  \begin{itemize}
+  \item Presistent Databases
+  \item Player Task Generator
+  \item Player Rating Model
+  \item Disaster Evaluation Model
+  \end{itemize}
 
-
-\subsection{Problem Handling}
-
-The system we proposed is able to handling most of the common problem appeared in HC system.
-
-\subsubsection{Model Cold Start and Initialization}
-
-\subsubsection{Malicious User Detection and Classificaition}
-
-\subsection{Portabilities}
-
-
-\subsection{Summary}
-
-    \begin{itemize}
-      \item Task Generator combines trusted results assign to players;
-      \item Always treat player as new player, but integrated as old player if exists;
-      \item Use ROI matching rate as graph edge weight, eigenvalue as trust value of player;
-      \item Disaster Evaluation use pre-defined weight, then defined the disaster level
-    \end{itemize}
+  With these components, model and databases, the disaster monitoring system is able to handling
+  common problems in HC system, such as cold start, malicious detection etc. It is also expandable,
+  portable and can be easily apply to any other same image selection and tagging 
+  human computation system in different areas.
