@@ -18,7 +18,7 @@
     \label{fig:arch}
     \end{figure}
 
-  The most important issue of this human computation system is to solve weather the player\'s input
+  The most important issue of this human computation system is to solve weather the input of player 
   is trustable or not. To solve this problem, we designed a \textbf{Task Generator} that combines 
   trusted results and seperate new satellite images to players. 
 
@@ -26,13 +26,14 @@
 
 \subsubsection{Database Fields}
 
-  For the convinience of model discusstion, we describe the system database PlayerDB Fields as follows:
-and also with the fields of database ResultDB:
+  For the convinience of model establishment, we describe the system database PlayerDB 
+  Fields as well as the fields of database ResultDB in the follows listing \ref{lst:playerdb}
+  and \ref{lst:resultdb}:
 
 \noindent\begin{minipage}{.45\textwidth}
 \begin{lstlisting}[
     caption={Player Database Fields},
-    label={lst:trustdb}
+    label={lst:playerdb}
 ]
 [
  {
@@ -84,62 +85,102 @@ and also with the fields of database ResultDB:
 \end{lstlisting}
 \end{minipage}
 
-Region of Interests (ROI)
+  In this disaster monitoring system, our participant do not need to register an account,
+  and the system shall assign a anonymous\_id for each participant which significantly 
+  accelerate 
+
+  Then we give some basic definition for the system model.
+
+  \begin{definition}
+  \label{def:roi}
+  The \textbf{Region of Interests (ROI)} $ROI_i$ is a player selected area of player $i$.
+  \end{definition}
+
+  \begin{definition}
+  \label{def:tagv}
+  The \textbf{tags vector} $T_i$ of player $i$ is indicated by a vector where the components represent by the count of all tags:
+  \[
+    T_i = (|\text{tag}_1|, |\text{tag}_2|, ..., |\text{tag}_n|)
+  \]
+  where 
+  \begin{itemize}
+  \item $n$ is the number of current exist tags;
+  \item $|\text{tag}_n|$ is the occurrance of $\text{tag}_n$.
+  \end{itemize}
+  \end{definition}
+  For instance, there are 5 different tags $\text{tag}_1, \text{tag}_2, \text{tag}_3, \text{tag}_4, \text{tag}_5$ exist in the current system,
+  player $i$ generates tags list $\{\text{tag}_1, \text{tag}_2, \text{tag}_3\}$, player $j$ generates tag list
+  $\{\text{tag}_4, \text{tag}_4, \text{tag}_5\}$. Then $T_i$ of player $i$ is $(1, 1, 1, 0, 0)$ and $T_j$ of player $j$ is $(0, 0, 0, 2, 5)$.
+
+  \begin{definition}
+  \label{def:weightv}
+  The \textbf{weight vector} $v = (p(\text{tag}_1), p(\text{tag}_2), ..., p(\text{tag}_n))$ \textbf{of all tags} 
+  can be calculated by the following equation \ref{ptag}:
+  \begin{equation}
+  \label{eq:ptag}
+  p(\text{tag}_i) = \frac{|\text{tag}_i|}{\sum_{j=1}^{n}{|\text{tag}_j|}}
+  \end{equation}
+  where
+  \begin{itemize}
+  \item $n$ is the number of current exist tags;
+  \item $|\text{tag}_i|$ is the occurrance of $\text{tag}_i$.
+  \end{itemize}
+  \end{definition}
 
 \subsubsection{Player Task Generator}
 
-    The \textbf{Player Task Generator (PTG)} combines images from satellite and ResultDB. 
-    In the first step, as we discussed before, to solve the imformation leakage problem,
-    PTG shall split a monitoring region into $m\times n$ small pieces of images, and also assign a 
-    unique \textbf{areaID} for each pieces, i.e. $(\text{areaID}, \text{time})$ 
-    specifice a unique image for user tasks. 
+  The \textbf{Player Task Generator (PTG)} combines images from satellite and ResultDB. 
+  In the first step, as we discussed before, to solve the imformation leakage problem,
+  PTG shall split a monitoring region into $m\times n$ small pieces of images, and also assign a 
+  unique \textbf{areaID} for each pieces, i.e. $(\text{areaID}, \text{time})$ 
+  specifice a unique image for user tasks. 
 
-    The second generate step is to retrieve tagged images from \textbf{ResultDB}. Then combine
-    all images as a user task assign to a new upcomming player. Each user task contains 
-    half of untagged images and half of tagged images.
+  The second generate step is to retrieve tagged images from \textbf{ResultDB}. Then combine
+  all images as a user task assign to a new upcomming player. Each user task contains 
+  half of untagged images and half of tagged images.
 
-    In short, The Data Model (only ouput here) for PTG is:
+  In short, The Data Model (only ouput here) for PTG is:
 
-    \[
-    \{(\text{areaID}_1, \text{time}_1), ..., (\text{areaID}_n, \text{time}_n)\}
-    \]
+  \[
+  \{(\text{areaID}_1, \text{time}_1), ..., (\text{areaID}_n, \text{time}_n)\}
+  \]
 
-    with $\text{areaID}_1$ to $\text{areaID}_{\floor{n}}$ are from satellite and 
-    $\text{areaID}_{\floor{n}+1}$ to $\text{areaID}_{n}$ are from \textbf{ResultDB}.
+  with $\text{areaID}_1$ to $\text{areaID}_{\floor{n}}$ are from satellite and 
+  $\text{areaID}_{\floor{n}+1}$ to $\text{areaID}_{n}$ are from \textbf{ResultDB}.
 
 \subsubsection{Player Rating Model}
 
   This subsection describes the Player Rating Model inside our Disaster Monitroing system.
-  PageRank was first proposed by Lary Page \cite{page1999pagerank}. It\'s commonly used for 
-  expressing the stability of physical systems and the relative importance, so-called centralities, 
-  of the nodes of a network. We transfer the basic idea of PageRank and use eigenvalue
-  as a \textbf{Trust Value (TV)} for each players.
+  PageRank was first proposed by Lary Page \cite{page1999pagerank} and applied to social analysis in \cite{bonacich2001eigenvector}. 
+  It is commonly used for expressing the stability of physical systems and the relative importance, 
+  so-called centralities, of the nodes of a network. We transfer the basic idea of centralities 
+  and use eigenvalue as a \textbf{Trust Value (TV)} for each players to distinguish manicious players.
 
   Considering a partial fully connected directed graph betwen players. 
   Each player is a node of the Player Rating Graph (PRG) as illustrate in figure \ref{fig:graph}.
 
   \begin{figure}[htp]
   \centering
-  \includegraphics[width=4cm]{figures/graph}
+  \includegraphics[width=0.3\columnwidth]{figures/graph}
   \caption{Player Rating Model}
   \label{fig:graph}
   \end{figure}
   
-  To define the edge weight, accroding to the database feild design of a player, each player
+  To define the edge weight, according to the database feild design of a player, each player
   output ROIs for each task region of a player task, and each ROI contains a tags list, thus, 
-  one can use three festures $(\text{ROI}, \text{tags}, TV)$.
-
+  one can use three festures: $\text{ROI}, \text{tags}, TV$.
 
   \begin{definition}
-  The weight from player $i$ to player $j$ can be formalized as follows:
-
+  The weight from player $i$ to player $j$ can be formalized as follows formula \ref{eq:weight}:
   \begin{equation}
+  \label{eq:weight}
   w_{ij} = 
-    \sum_{\text{ROI}\in\text{ROIs}}{\text{TV}_i \times
-      \frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}
-      \frac{Cov(\text{tags}_i, \text{tags}_j; v)}
-          {Cov(\text{tags}_i, \text{tags}_i; v)Cov(\text{tags}_j, \text{tags}_j; v)}
-    }
+  \sum_{\text{ROI}\in\text{ROIs}}{
+    \text{TV}_i \times
+    \frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}
+    \left( 2-\frac{Cov(T_i, T_j; v)}
+        {Cov(T_i, T_i; v)\times Cov(T_j, T_j; v)} \right)
+  }
   \end{equation}
 
   where 
@@ -147,94 +188,141 @@ Region of Interests (ROI)
   \begin{itemize}
     \item $TV_i$ is the trust value of player $i$;
     \item $\text{ROI}_i$ is the selected ROI from player $i$;
-    \item $\text{tags}_i$ is the tags from player $i$;
+    \item $T_i$ is the tags vector of player $i$;
     \item $Cov(x, y; v)$ is the weighted covariance of $x$ and $y$ via $v$;
     \item $v$ is the weight vector of all tags.
   \end{itemize}
   \end{definition}
 
-  This definition of  can represents the score from $i$ to $j$
+  The first part of the definition $\sum_{\text{ROI}\in\text{ROIs}}$ summarized all possible 
+  ROI between player $i$ and player $j$. The theioretically item of this formular is the number
+  of ROI from player $i$ multiply the number of ROI from player $j$. Nevertheless, it can be
+  significantlly decreased in this particular scienario. Considering player i and player j 
+  with two ROIs as illustrate in figure \ref{fig:performance}.
+
+  \begin{figure}[htp]
+  \centering
+  \includegraphics[width=0.5\columnwidth]{figures/performance}
+  \caption{Two players with two ROIs}
+  \label{fig:performance}
+  \end{figure}
+
+  One can expand equation \ref{eq:weight} as follows formula \ref{eq:expand}:
+
+  \begin{multline}
+  \label{eq:expand}
+  w_{ij} = \text{TV}_i \times \left(2-\frac{Cov(T_i, T_j; v)}{Cov(T_i, T_i; v)\times Cov(T_j, T_j; v)}\right) \times \\
+    \left( \frac{\text{ROI}_i^1\cap\text{ROI}_j^1}{\text{ROI}_i^1}           
+    + \frac{\text{ROI}_i^1\cap\text{ROI}_j^2}{\text{ROI}_i^1}           
+    + \frac{\text{ROI}_i^2\cap\text{ROI}_j^1}{\text{ROI}_i^2}           
+    + \frac{\text{ROI}_i^2\cap\text{ROI}_j^1}{\text{ROI}_i^2} \right)
+  \end{multline}
+
+  Fortunately, the second and the third part of the expation are equal to zero.
+
+  We call the second part $\text{TV}_i \times \frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}$ 
+  of formula \ref{eq:weight} as \textbf{Matching Area Retio (MAR)}. 
+  It was inspired by a common computer vision criteria,
+  the so called Intersection over Union (IoU), also called Jaccard Index in mathematics\cite{real1996probabilistic},
+  which is the standard performance measure that is commonly used for the object category segmentation problem.
+  Nevertheless, MAR is not equal to the IoU of ROIs of player $i$  and player $j$ since
+  it only use the ROI of player $i$ as denominator instead of the union of ROIs of player $i$ and player $j$,
+  which leads the differnce between MAR and IoU. There are two reason to use MAR instead of IoU:
+  Firstly, IoU as weight of graph causes the directed graph to an undirected graph due to the IoU of player $i$ to $j$
+  is as same as the IoU of player $j$ to $i$; Furthermore, player $i$ as the evaluator from $i$ to $j$ 
+  should be the performance base.
+
+  The third part $\frac{Cov(T_i, T_j; v)}{Cov(T_i, T_i; v)\times Cov(T_j, T_j; v)}$
+  of formula \ref{eq:weight} is applied by Weighted Pearson Correlation Coefficient. 
   
+  To calculate the eigenvalue of the ajacency matrix of PRG, one can use the normalized ajacency matrix 
+  through the following formula \ref{eq:normalize}:
+  \begin{equation}
+  \label{eq:normalize}
+  A = (a_{ij}) = (\frac{w_{ij}}{\sum_{j}{w_{ij}}})\\
+  \end{equation}
+
+  \begin{theorem}
+  Matrix A is irreducible, real, non-negative, column-stochastic, and diagonal element being positive.
+  \end{theorem}
+
+  \begin{proof}
+  \textbf{Irreducibility}: A is normalized through an ajacency matrix of a strong connected player
+  rating graph, which proofs A is irreducible.
+
+  \textbf{Real elements}: trivial.
+  
+  \textbf{Non-negative elements}: We only need to prove $\text{TV}_i$, 
+    $\frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}$ and 
+    $2-\frac{Cov(T_i, T_j; v)}{Cov(T_i, T_i; v)\times Cov(T_j, T_j; v)}$ are non-negative 
+    respectively. $\text{TV}_i$ is the eigenvalues of normalized graph ajacency matrix, 
+    thus the codomain of $\text{TV}_i$ lies $(0, 1\rbrack$; For MAR, its range is obviously from 0 to 1,
+    which lies $\lbrack 0, 1 \rbrack$; For $2-\frac{Cov(T_i, T_j; v)}{Cov(T_i, T_i; v)\times Cov(T_j, T_j; v)}$,
+    the Pearson Correlation lies on $[-1, 1]$, then this part lies on $[1, 3]$.
+    Three parts are non-negative.
+  
+  \textbf{Positive diagonal elements}: The diagonal elements can be formalized by follows:
+
   \[
-  (\text{anonymous\_id}, \text{image}, \text{event\_time}, \text{ROI}, \text{tag\_list})
+  w_{ii} = 
+  \sum_{\text{ROI}\in\text{ROIs}}{
+    \text{TV}_i \times
+    \frac{\text{ROI}_i\cap\text{ROI}_i}{\text{ROI}_i}
+    \left( 2-\frac{Cov(T_i, T_i; v)}
+        {Cov(T_i, T_i; v)\times Cov(T_i, T_i; v)} \right)
+  } = \sum_{\text{ROI}\in\text{ROIs}}{\text{TV}_i} > 0
+  \]
+  
+  \textbf{Column stochastic}: according to the definition of matrix $A$, the sum of the column
+  elements is:
+  \[
+    \sum_{i}{\frac{w_{ij}}{\sum_{j}{w_{ij}}}} 
+    = \frac{\sum_{i}{w_{ij}}}{\sum_{j}{w_{ij}}} = 1
+  \]
+  \end{proof}
+
+  We has proved the existence and uniqueness of eigenvalues of normalized PRG ajacency matrix, 
+  one can use the corresponding eigenvalues to represent the trust value of players. Thus, we have:
+
+  \begin{definition}
+  A \textbf{Trust Value} $TV_i$ of player $i$ represents by the $i$-th eigenvalue of normalized PRG ajacency matrix $A$
+  \end{definition}
+
+  This definition can represents the rating score from $i$ to $j$.
+  
+  Note that:
+
+  \begin{itemize}
+    \item $(anonymous\_id, image, event\_time, ROI)$ is the primary key of the input vector;
+    \item A player can generate multiple vectors to rating system even for same image;
+    \item The event\_time is the capture time of the satellite image.
+  \end{itemize}
+
+  Terefore eigenvalue of A is the player trust value. When a new player tagging task need to be rated,
+
+  \begin{itemize}
+    \item which means we need introduce a new node to the graph
+    \item need calculate the trust value of new graph
+    \item let $t’$ is the trust value of new player
+    \item if $t’ >= \text{mean}(\text{old\_eigenvalues})$, then it is a reliable player, otherwise drop it.
+  \end{itemize}
+
+  In short, the input and output Data Model of PRM are as follows. For input:
+
+  \[
+    (\text{anonymous\_id}, \text{area\_id}, \text{time}, \text{ROIs}, \text{tags})
   \]
 
-  Model output: 
+  For model output: 
   
   \[
-  (\text{anonymous\_id}, \text{trust\_value})
+  (\text{anonymous\_id}, \text{TV})
   \]
-
-    Note that:
-
-    \begin{itemize}
-      \item $(anonymous\_id, image, event\_time, ROI)$ is the primary key of the input vector;
-      \item A player can generate multiple vectors to rating system even for same image;
-      \item The event\_time is the capture time of the satellite image.
-    \end{itemize}
-
-    \begin{figure}[htp]
-    \centering
-    \includegraphics[width=4cm]{figures/weight-define}
-    \caption{Weight Definition Visualization}
-    \label{fig:roiweight}
-    \end{figure}
-
-    For a certain image $img$ at time $t$, Rating: player $i$ $\rightarrow$ player $j$:
-
-    \[
-    w_{ij}=\sum_{\text{ROI}\in \text{ROIs}}\frac{\text{ROI}(i,j)}{\text{ROI}(i)} \times \frac{Cov(\text{tags}(i), \text{tags}(j))}{\text{var}(\text{tags}(i))\text{var}(\text{tags}(j))} \geq 0
-    \]
-
-    Normalized Adjacency Matrix:
-
-    \[
-    A = (\frac{w_{ij}}{\sum_{j}{w_{ij}}})
-    \]
-
-    
-    \begin{theorem}
-    A is \textbf{irreducible, real, non-negative, column-stochastic, and diagonal element being positive.}
-    \end{theorem}
-
-    \begin{proof}
-    blablabla
-    \end{proof}
-
-    then eigenvalue of A is the player trust value. When a new player tagging task need to be rated,
-
-    \begin{itemize}
-      \item which means we need introduce a new node to the graph
-      \item need calculate the trust value of new graph
-      \item let $t’$ is the trust value of new player
-      \item if $t’ >= \text{mean}(\text{old\_eigenvalues})$, then it is a reliable player, otherwise drop it.
-    \end{itemize}
 
   \subsubsection{Disaster Evaluation Model}
 
-    System like ESP, ARTigo has proved that human inputs are valuable and useful. That\'s why we decide to let user input
-    their own tags.
-
-    Query input:
-
-    \[
-    (\text{time}) or (\text{area\_id})/(\text{area\_id}, \text{time})
-    \]
-
-    Model output:
-
-    \[
-    (\text{area\_id}, \text{time}, \text{disaster\_level})
-    \]
-
-    Note that:
-
-    \begin{itemize}
-      \item All results are evaluated from reliable tasks
-      \item Evaluation Model generated by all reliable history
-    \end{itemize}
-
-    Now we have trusted results, each area has its tagging history.
+  System like ESP\cite{von2004labeling}, ARTigo\cite{wieser2013artigo} has proved that 
+  human inputs are valuable and useful.
 
     For an area at time t, define disaster level as follows:
 
@@ -254,6 +342,28 @@ Region of Interests (ROI)
       \item disaster region: $\cup_{ROI\in ROIs}{ROI}$
       \item disaster level: $v_{area}$
     \end{itemize}
+
+
+    For query input:
+
+    \[
+    (\text{time}) or (\text{area\_id})/(\text{area\_id}, \text{time})
+    \]
+
+    For model output:
+
+    \[
+    (\text{area\_id}, \text{time}, \text{disaster\_level})
+    \]
+
+    Note that:
+
+    \begin{itemize}
+      \item All results are evaluated from reliable tasks
+      \item Evaluation Model generated by all reliable history
+    \end{itemize}
+
+    Now we have trusted results, each area has its tagging history.
 
 
 \subsection{Problem Handling}
