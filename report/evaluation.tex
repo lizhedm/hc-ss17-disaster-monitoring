@@ -30,21 +30,36 @@
 
 \subsection{Limitation of the System}
 
-\subsubsection{Evaluation Outdate}
+  \subsubsection{Evaluation Outdate}
 
-A limitation occurs in our social network based model is each disaster level evaluation get invalid 
-if the region image outdate. 
-We assume the satellite monitors a region and take picutre between intervals. However, our evaluation
-model only calculate the disaster level in a unique moment, which means the disaster level need 
-transvaluation when a new image come out.
-If our player are not enough so that the region images always have to wait new evaluation, then the
-disaster level will never be calculated.
+  A limitation occurs in our social network based model is each disaster level evaluation get invalid 
+  if the region image outdate. 
+  We assume the satellite monitors a region and take picutre between intervals. However, our evaluation
+  model only calculate the disaster level in a unique moment, which means the disaster level need 
+  transvaluation when a new image come out.
+  If our player are not enough so that the region images always have to wait new evaluation, then the
+  disaster level will never be calculated.
 
-A possible solution is to consider the region disaster level history as a time series. Then we can apply
-some prediction method for it. For instance, we have time series: $(t_1, t_2, t_3, ..., t_n)$
-and its corresponding disaster level: $(DL_1, DL_2, DL_3, ..., DL_n)$.
-Then we can use these time series to predict the disaster level at time $t_(n+1)$.
+  A possible solution is to consider the region disaster level history as a time series. Then we can apply
+  some prediction method for it. For instance, we have time series: $(t_1, t_2, t_3, ..., t_n)$
+  and its corresponding disaster level: $(DL_1, DL_2, DL_3, ..., DL_n)$.
+  Then we can use these time series to predict the disaster level at time $t_(n+1)$.
 
-At the same time, we also have the historical data of trust value of a player. We can also
-use time series prediction to predict the players trust value. But in all of these, the time series
-of disaster level is not stationary but the time series of trust value is stationary.
+  At the same time, we also have the historical data of trust value of a player. We can also
+  use time series prediction to predict the players trust value. But in all of these, the time series
+  of disaster level is not stationary but the time series of trust value is stationary.
+
+  \subsubsection{Information Loss}
+  We cut big map images into small fragements to prevent leakage of data. But this method will cause some information loss problem if some important ROIs are located at the intersection of two dividing lines.
+  A possible solution for this limitation is to cut the big image with a random distance between two adjacency dividing lines, as shown in figure \ref{fig:information_loss}.
+
+  \begin{figure}[htp]
+  \centering
+  \includegraphics[width=0.5\columnwidth]{figures/information_loss}
+  \caption{Information Loss Solution}
+  \label{fig:information_loss}
+  \end{figure}
+
+  \subsubsection{Gameplay and Playability}
+  The HC system collect satellite photos of disaster areas. But even if in the disaster areas, not every part of the areas has disaster. Most parts of the earth are lake, forest, desert and so on, which means the users may meet the situation that there is no available ROI in several continuous rounds. Obviously, it will decrease the playability and enjoyment of the game.
+  Our system is just a very simple tagging game at present, users can not get enough enjoyment they want in it. And it is too reliant on the unpaid volunteers to donate their time to contribute information. We should make the system more interesting and appealing in the future work.
