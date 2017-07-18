@@ -1,4 +1,158 @@
 \section{Functionality of a novel HC system}
-  \subsection{Functionality as seen by a user}
-  \subsection{Functionality as seen by a stakeholder}
-  \subsection{Incentivization concept}
+  \subsection{Functionality as seen by a player}
+      \subsubsection{Disaster Monitoring Game Introduction}
+      The idea behind our human computation system is GWAP,
+      i.e. Game with a purpose.
+      We have built a prototype of image tagging game,
+      which is similar to the game on Artigo.com \cite{wieser2013artigo}.
+      In our game,
+      A player can finish infinity Round tasks, 
+      a Round task contains {N} tagging tasks and a tagging task is to:
+      interpret one picture.
+      Within one round task, the player will see {N} pictures.
+      Each time he/she will be asked to tag one of these pictures.
+      At first,
+      the player needs to draw a rectangle area which indicates that he/she has seen some objects in this area.
+      Thoses objects are often considered as a sign of danger or damage.
+      They are mostly like:
+      
+      \begin{itemize}
+        \item "Rocket Launcher"
+        \item "Armoured vehicles"
+        \item "Tanks"
+        \item "Burning building"
+        \item "Heavy vehicle tracks"
+        \item "sign of explosion"
+      \end{itemize}
+
+      Each of them has a value of disaster level, 
+      which will be used later in our (xxxx chapter) for analysing the disaster level of this region.
+      A submenu list("Pre-Provided item list") which contains all of these items will pop up after the area has been selected.
+      In this step,
+      the player can decide which one of these items matches and choose it to fill the tag.
+      Sometimes,
+      there may be a situation that the player does find "a sign of danger or damage",
+      however, he/she has no idea what it is.
+      In this case, 
+      the player can obtain helps from the reference panel which provides the player with helpful examples.
+      Besides, 
+      if the player doesn't find the expected item in the "Pre-Provided item list",
+      he/she can also create a new tag.
+
+      In a tagging task,
+      the player also has a choice to add multiple tags to one picture,
+      or he/she dosen't need to add any tags when he/she thinks that this region is safe.
+
+      After finishing one tagging task, 
+      the player will be directed to the next task till the end of the game.
+
+
+      \subsubsection{Example}
+      In this section,
+      An example of a user journey will be provided in order to illustrate the game process.
+
+      \begin{figure}[htp]
+      \centering
+      \includegraphics[width=0.7\textwidth]{figures/function-player-0}
+      \caption{Game panel}
+      \label{fig:main-panel}
+      \end{figure}
+
+      Imaging that User A is now at the very first begining of the game.
+      What he will see,
+      are a side bar on the left side,
+      which contains some information like:
+      user ID,
+      game guide and a reference library,
+      and a main panel on the right side(Figure 2.1).
+      If User A finds a sign of damage or danger in the picture on the right side.
+      He can click the button "add marks" and then hs is able to draw a rectangle area which indicates the location of the sign.
+      A selection box will then pop out automatically and User A can select the suited item or add a new tag(Figure 2.2).
+
+      \begin{figure}[htp]
+      \centering
+      \includegraphics[width=0.7\textwidth]{figures/function-player-1}
+      \caption{Game panel - tag list}
+      \label{fig:main-panel}
+      \end{figure}
+
+      Like what we have already mentioned above,
+      User A can also add multiple tags to one picture(Figure 2.3).
+
+      \begin{figure}[htp]
+      \centering
+      \includegraphics[width=0.7\textwidth]{figures/function-player-2}
+      \caption{Game panel - multiple tags}
+      \label{fig:main-panel}
+      \end{figure}
+
+      After User A finishes this tagging task,
+      i.e.
+      tagging the first picture,
+      he can click the button "save and to the next picture" so that he can save the tags and go to the next task.
+      Figure 2.4 illustrates how a reference library can be,
+      whose aim is to help User A to identify different signs of danger or damage.
+
+      \begin{figure}[htp]
+      \centering
+      \includegraphics[width=0.7\textwidth]{figures/function-player-3}
+      \caption{Game panel - reference library}
+      \label{fig:main-panel}
+      \end{figure}
+
+    \subsection{Functionality as seen by a stakeholder}
+      \subsubsection{Platform introduction}
+      In our disaster monitoring system, 
+      we take image taggings from players as our input. 
+      In the next step, 
+      we will filter and analyse the data.
+      The final output of our work is a disaster level report in some certain region,
+      which can be used by some organasitions,
+      like: Unicef, some NGOs and even governments.
+
+      Under this consideration, 
+      we also build a prototype for this user group,
+      which allows them to have an overview of the disaster level and to download the report at the same time (see figure 2.5).
+
+      \begin{figure}[htp]
+      \centering
+      \includegraphics[width=0.7\textwidth]{figures/function-stakeholder-1}
+      \caption{disaster level report platform}
+      \label{fig:main-panel}
+      \end{figure}
+
+      The platform is composed of a curve chart,
+      a map and some statistics.
+      In the curve chart,
+      each curve shows the tendency of the yearly disaster level of a smaller region.
+      Like here in figure 2.5, 
+      the whole region is Syria and each curve stands for a province in Syria.
+      The user can click the "dot" on curves,
+      which stands for the disaster level of that month.
+      Meanwhile, the corresponding area will be highlighted on the map (figure 2.6).
+
+      \begin{figure}[htp]
+      \centering
+      \includegraphics[width=0.7\textwidth]{figures/function-stakeholder-2}
+      \caption{disaster level report platform}
+      \label{fig:main-panel}
+      \end{figure}
+
+      In the statistic part,
+      the user gets an overview of the yearly disaster level of a region.
+      He/she also have the opportunity to download it.
+      If the user wants to dig deeper, 
+      he/she can click on the highlighted area on this map,
+      which will direct him/her to that region (figure 2.7).
+
+      \begin{figure}[htp]
+      \centering
+      \includegraphics[width=0.7\textwidth]{figures/function-stakeholder-3}
+      \caption{disaster level report platform}
+      \label{fig:main-panel}
+      \end{figure}
+
+      In figure 2.7,
+      the user is directed to the province ldlib and now each curve stands for a smaller region in this province,
+      in other words, different cities in ldlib.
+    
