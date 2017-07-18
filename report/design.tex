@@ -225,7 +225,7 @@ In this section we describes the overall design of our disaster monitoring backe
   Fortunately, the second and the third part of the expation are equal to zero.
 
   We call the second part $\text{TV}_i \times \frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}$ 
-  of formula \ref{eq:weight} as \textbf{Matching Area Retio (MAR)}. 
+  of formula \ref{eq:weight} as \textbf{Matching Area Ratio (MAR)}. 
   It was inspired by a common computer vision criteria,
   the so called Intersection over Union (IoU), also called Jaccard Index in mathematics\cite{real1996probabilistic},
   which is the standard performance measure that is commonly used for the object category segmentation problem.
@@ -356,7 +356,7 @@ In this section we describes the overall design of our disaster monitoring backe
   $(\text{time})$, $(\text{area\_id})$ or $(\text{area\_id}, \text{time})$; For output:
   $(\text{area\_id}, \text{time}, \text{disaster\_level})$.
 
-  \subsubsection{Model Initialization}
+  \subsubsection{Model Initialization and System Cold Start}
 
   A cold start of such a system is a common problem in human computation system that 
   is avoided by hiring people to play or learn as long as 
