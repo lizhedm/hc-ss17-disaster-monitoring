@@ -1,6 +1,14 @@
 \section{System Design}
 
-In this section we describe the overall design in details of our disaster monitoring backend system design.
+In this chapter, we describe the overall design in details of our disaster monitoring backend system.
+Firstly, we proposed our system architecture of this disaster monitoring;
+Then we specified and justify our main system components such as databases design, 
+Player Task Generator, Player Rating Model as well as Disaster Evaluation Model.
+
+With these components, model and databases, the disaster monitoring system is able to handling
+common problems in HC system, such as cold start, malicious detection etc. It is also expandable,
+portable and can be easily apply to any other same image selection and tagging based
+human computation system in different areas.
 
 \subsection{System Architectures}
 
@@ -22,15 +30,24 @@ In this section we describe the overall design in details of our disaster monito
   database \textbf{ResultDB}. Stakeholder make querys to this monitoring database. 
   Figure \ref{fig:arch} illustrate the overall disaster system design.
 
-  
-
 \subsection{System Components}
 
 \subsubsection{Database Fields}
 
   For the convinience of model establishment, we describe the system database PlayerDB 
-  fields as well as the fields of database ResultDB in the follows listing \ref{lst:playerdb}
-  and \ref{lst:resultdb}:
+  fields as well as the fields of database ResultDB in listing \ref{lst:playerdb}
+  and \ref{lst:resultdb}.
+
+  In this disaster monitoring system, our participant do not need to register an account,
+  and the system shall assign a anonymous\_id for each player, this function significantly 
+  accelerate player to particpate to this game. Thus, the PlayerDB stores the anonymous\_id
+  to detect the same players if they participate next time. The player will accomplish different
+  game tasks, each task result shall stores in the tasks filed.
+
+  In the ResultDB, an area ID is unique, and assigned by our system, the disaster\_level field
+  represents the level of this area. Each area shall be evaluated by our player, and the evaluation
+  history stores in history field.
+
 
 \noindent\begin{minipage}{.45\textwidth}
 \begin{lstlisting}[
@@ -87,15 +104,6 @@ In this section we describe the overall design in details of our disaster monito
 \end{lstlisting}
 \end{minipage}
 
-  In this disaster monitoring system, our participant do not need to register an account,
-  and the system shall assign a anonymous\_id for each player, this function significantly 
-  accelerate player to particpate to this game. Thus, the PlayerDB stores the anonymous\_id
-  to detect the same players if they participate next time. The player will accomplish different
-  game tasks, each task result shall stores in the tasks filed.
-
-  In the ResultDB, an area ID is unique, and assigned by our system, the disaster\_level field
-  represents the level of this area. Each area shall be evaluated by our player, and the evaluation
-  history stores in history field.
 
   To explain other fileds, we describe few basic definition for the system model.
 
@@ -179,11 +187,11 @@ In this section we describe the overall design in details of our disaster monito
   \begin{equation}
   \label{eq:weight}
   w_{ij} = 
-  \sum_{\text{ROI}\in\text{ROIs}}{
+  \sum_{\text{ROI}\in\text{ROIs}}{\left(
     \text{TV}_i \times
-    \frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}
+    \frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}\times
     \left( 2-\frac{Cov(T_i, T_j; v)}
-        {Cov(T_i, T_i; v)\times Cov(T_j, T_j; v)} \right)
+        {Cov(T_i, T_i; v)\times Cov(T_j, T_j; v)} \right)\right)
   }
   \end{equation}
 
@@ -269,11 +277,11 @@ In this section we describe the overall design in details of our disaster monito
 
   \[
   w_{ii} = 
-  \sum_{\text{ROI}\in\text{ROIs}}{
+  \sum_{\text{ROI}\in\text{ROIs}}{\left(
     \text{TV}_i \times
     \frac{\text{ROI}_i\cap\text{ROI}_i}{\text{ROI}_i}
     \left( 2-\frac{Cov(T_i, T_i; v)}
-        {Cov(T_i, T_i; v)\times Cov(T_i, T_i; v)} \right)
+        {Cov(T_i, T_i; v)\times Cov(T_i, T_i; v)} \right)\right)
   } = \sum_{\text{ROI}\in\text{ROIs}}{\text{TV}_i} > 0
   \]
   
@@ -289,7 +297,7 @@ In this section we describe the overall design in details of our disaster monito
   one can use the corresponding eigenvalues to represent the trust value of players. Thus, we have:
 
   \begin{definition}
-  A \textbf{Trust Value} $TV_i$ of player $i$ represents by the $i$-th eigenvalue of normalized PRG ajacency matrix $A$
+  A \textbf{Trust Value} $TV_i$ of player $i$ represents by the $i$-th eigenvalue of normalized PRG ajacency matrix $A$.
   \end{definition}
 
   This definition can represents the rating score from $i$ to $j$. With the trust value of players,
@@ -357,7 +365,7 @@ In this section we describe the overall design in details of our disaster monito
   $(\text{time})$, $(\text{area\_id})$ or $(\text{area\_id}, \text{time})$; For output:
   $(\text{area\_id}, \text{time}, \text{disaster\_level})$.
 
-  \subsubsection{Model Initialization and System Cold Start}
+\subsection{Model Initialization and System Cold Start}
 
   A cold start of such a system is a common problem in human computation system that 
   is avoided by hiring people to play or learn as long as 
@@ -386,19 +394,3 @@ In this section we describe the overall design in details of our disaster monito
   \]
 
   with $|\text{players}^{init}|$ is the number of initial trusted group. 
-
-  \paragraph{Summary}
-
-  We have described our monitoring system in general and also detailed. It contains the following components:
-
-  \begin{itemize}
-  \item Presistent Databases
-  \item Player Task Generator
-  \item Player Rating Model
-  \item Disaster Evaluation Model
-  \end{itemize}
-
-  With these components, model and databases, the disaster monitoring system is able to handling
-  common problems in HC system, such as cold start, malicious detection etc. It is also expandable,
-  portable and can be easily apply to any other same image selection and tagging 
-  human computation system in different areas.
