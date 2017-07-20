@@ -18,13 +18,13 @@
 \allsectionsfont{\centering \normalfont\scshape} 
 \usepackage{fancyhdr} 
 \pagestyle{fancyplain}
-\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
-\fancyfoot[L]{} % Empty left footer
-\fancyfoot[C]{} % Empty center footer
-\fancyfoot[R]{\thepage} % Page numbering for right footer
-\renewcommand{\headrulewidth}{0pt} % Remove header underlines
-\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
-\setlength{\headheight}{13.6pt} % Customize the height of the header
+\fancyhead{}
+\fancyfoot[L]{}
+\fancyfoot[C]{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{13.6pt}
 \setlength{\parskip}{0.5\baselineskip}
 \numberwithin{equation}{section}
 \numberwithin{figure}{section} 
@@ -52,7 +52,6 @@
   rulesepcolor={\color{blue!20!white}},
   showspaces=false,
 }
-% \renewcommand{\lstlistingname}{Code}
 \newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
 
 \usepackage{draftwatermark}
@@ -82,7 +81,7 @@ A Novel GWAPs Disaster Monitoring System\\
 
 \paragraph{Abstract}
 
-Abstract test
+TODO: abstract
 
 \input{introduction}
 \input{functionality}
@@ -91,6 +90,7 @@ Abstract test
 \input{future}
 
 \nocite{*}
+\addcontentsline{toc}{section}{\protect\numberline{}References}
 \bibliographystyle{ieeetr}
 \bibliography{ref}
 
