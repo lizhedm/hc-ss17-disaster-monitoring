@@ -1,8 +1,8 @@
-\section{Conclutions \& Future Works}
+\section{Conclusions \& Future Works}
 
-TODO: chapter summary
+In this chapter, we give a short recap of the functionalities, design, success criterion and limitations of our human computation system. Besides, we will discuss the possible extensions of our system and will also give some thoughts on the interaction with other human computation systems.
 
-\subsection{Conclutions}
+\subsection{Conclusions}
 
 % 在这份报告中，我们提出了一个全面的针对灾难监控的人肉计算系统，并详细讨论了它数学理论基础、所导致的问题和可能的解决方案。
 % 纵观全文，我们在「introduction」一章中简述了基于GWAPs的人肉计算系统的基本动机，介绍了灾难监控存在的基本问题，
@@ -49,8 +49,13 @@ For the future works, we will simply discuss the possible extension of our human
 along with the thoughts on the interaction between our system and the others in the following sections.
 
 \subsection{Possible Extensions of the System}
+In this section, we will discuss some possible extensions and future works of our human computation system. 
 
-TODO: extension discussion on replacement classification
+Since in our HC system, we collect human inputs by ROI tagging tasks, we can easily get helps from other similar HC systems. Because some solutions to the problems that occur in this step(image tagging) can be also applied to our system.
+
+In addition, due to the fact that we haven't enough user inputs right now, we use page rank algorithm to detect malicious groups. This dectection is a problem of classification, which seperate users into trusted groups and un-trusted groups. Definitely, some machine learning algorithms are more suitable for the detection of malicious groups once our user input dataset is large enough.
+
+Besides, as already mentioned before, sometimes, the game player may encouter a situation that there is no ROI in some pictures which contain only landscapes like: mountains, rivers and forests. In this case, with the help of image recoginition technique, we can filter out those images from our image database previously so that we can collect more data from the game and make our image tagging game more efficiently. Finally, we can also compare our HC system with a image recognition system and it is perhaps interesting to find out which one is more accurate and efficient.
 
 \subsection{Thoughts on Interaction with Other HC System}
 
