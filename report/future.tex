@@ -1,6 +1,9 @@
 \section{Conclusions \& Future Works}
 
-In this chapter, we give a short recap of the functionalities, design, success criterion and limitations of our human computation system. Besides, we will discuss the possible extensions of our system and will also give some thoughts on the interaction with other human computation systems.
+In this chapter, we give conclusions of the functionalities, design, success criterion and limitations 
+of our human computation system. 
+Besides, we will discuss the possible extensions of our system and will also give some thoughts on 
+the interaction with other human computation systems.
 
 \subsection{Conclusions}
 
@@ -18,8 +21,7 @@ then gives few options to solve these matters.
 In the chapter of functionalities, we illustrated a prototype GWAPs-based disaster monitoring
 human computation system for game players as well as stakeholders, and then described its
 necessary functions and interaction logic. On thoughts of system implementation, we decided to implement 
-this system on the web, and probed the possible technology frameworks stands on the state-of-the-art technology stack.
-In the end, we pointed out the reason and drawback of our choices.
+this system on the web, probed the possible technology frameworks and pointed out the reason of our choices.
 
 % 然后，我们详细描述了整个系统能够顺利并合理运行的全部理论细节，首先通过人工特征定义了一个用于计算玩家可信度的PRM，
 % 描述了在这个模型下，对恶意用户进行检测判断的算法。作为 justification，我们给出了这个模型的合理性证明。
@@ -48,14 +50,21 @@ and possible improvements for evaluation outdated, information loss and also gam
 For the future works, we will simply discuss the possible extension of our human computation system,
 along with the thoughts on the interaction between our system and the others in the following sections.
 
-\subsection{Possible Extensions of the System}
-In this section, we will discuss some possible extensions and future works of our human computation system. 
+\subsection{Possible Extensions}
 
-Since in our HC system, we collect human inputs by ROI tagging tasks, we can easily get helps from other similar HC systems. Because some solutions to the problems that occur in this step(image tagging) can be also applied to our system.
+Our system was described in general. We collect human inputs by ROI tagging tasks, 
+which means any other HC system that related to ROI tagging tasks can easily use this system backend design.
+In addition, due to the fact that we do not have enough user inputs at present, we use a certainty algorithm instead of 
+uncertainty probablistic-based algorithm to detect malicious groups. 
+Considering malicious detection is classification problem, which seperate users into trusted groups and untrusted groups. 
+One can apply any classification machine learning algorithms that are more suitable for the detection of malicious groups 
+if our user input dataset is large enough.
 
-In addition, due to the fact that we haven't enough user inputs right now, we use page rank algorithm to detect malicious groups. This dectection is a problem of classification, which seperate users into trusted groups and un-trusted groups. Definitely, some machine learning algorithms are more suitable for the detection of malicious groups once our user input dataset is large enough.
-
-Besides, as already mentioned before, sometimes, the game player may encouter a situation that there is no ROI in some pictures which contain only landscapes like: mountains, rivers and forests. In this case, with the help of image recoginition technique, we can filter out those images from our image database previously so that we can collect more data from the game and make our image tagging game more efficiently. Finally, we can also compare our HC system with a image recognition system and it is perhaps interesting to find out which one is more accurate and efficient.
+Besides, as we mentioned before, sometimes, the game player may encouter a situation that 
+there is no ROI in some pictures which contain only landscapes like: mountains, rivers and forests.
+In this case, with collaborative computing of image recoginition technique, we can filter out those images 
+from our image database previously so that we can collect more data from the game and 
+make our image tagging game more efficiently.
 
 \subsection{Thoughts on Interaction with Other HC System}
 
