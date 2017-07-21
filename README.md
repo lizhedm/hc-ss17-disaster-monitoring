@@ -1,6 +1,6 @@
 # HC SS17: Disaster Monitoring
 
-This repo contains all project sources file of LMU Human Computation Lecture Summer Semester 2017.
+This repo contains all project source files of LMU Human Computation Lecture Summer Semester 2017.
 
 ## License
 
