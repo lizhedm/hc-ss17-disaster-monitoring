@@ -72,13 +72,15 @@ of disaster level is not stationary but the time series of trust value is statio
 We cut big region images into small fragements areas to prevent leakage of data. 
 But this method will cause some information loss problem if some important ROIs are 
 located at the intersection of two dividing lines.
-A possible solution for this limitation is to cut the big image with a random distance 
-between two adjacency dividing lines, as shown in figure \ref{fig:information_loss}.
+A possible solution for this limitation is to consider new regions that contains the loss
+informations, as shown in figure \ref{fig:information_loss}. Note that this solution that
+only increases the number of region pictures, it does not influence any model and system design.
 
 \begin{figure}[htp]
 \centering
-\includegraphics[width=0.5\columnwidth]{figures/information_loss}
-\caption{Information Loss Solution (TODO: Modify Image)}
+\includegraphics[width=0.7\columnwidth]{figures/information_loss2}
+\caption{\textbf{Information Loss}: Information loss may occurs on the intersection lines, as shown on the left; a possible solution
+is to provide additional regions (blue rectangles) for these special area as shown on the right.}
 \label{fig:information_loss}
 \end{figure}
 
