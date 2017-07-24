@@ -8,7 +8,7 @@ This repo contains all project source files of LMU Human Computation Lecture Sum
   - [Lab 1 Session](beamers/lab1.pdf): Introduction on Disaster Monitoring
   - [Lab 2 Session](beamers/lab2.pdf): Prototype & System Design
   - [Lab 3 Session](beamers/lab3.pdf): Issue Fix & Further Thoughts
-  - Exam Presentation: TBA
+  - [Exam](beamers/exam.pdf): Final Presentation
 - Papers
   - [Final Report](report/hc_final_project_report_team_Hotpot.pdf)
 
