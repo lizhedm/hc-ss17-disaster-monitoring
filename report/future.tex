@@ -1,6 +1,9 @@
 \section{Conclusions and Future Works}
 
-In this chapter, we give a short recap of the functionalities, design, success criterion and limitations of our human computation system. Besides, we will discuss the possible extensions of our system and will also give some thoughts on the interaction with other human computation systems.
+In this chapter, we give conclusions of the functionalities, design, success criterion and limitations 
+of our human computation system. 
+Besides, we will discuss the possible extensions of our system and will also give some thoughts on 
+the interaction with other human computation systems.
 
 \subsection{Conclusions}
 
@@ -18,8 +21,7 @@ then gives few options to solve these matters.
 In the chapter of functionalities, we illustrated a prototype GWAPs-based disaster monitoring
 human computation system for game players as well as stakeholders, and then described its
 necessary functions and interaction logic. On thoughts of system implementation, we decided to implement 
-this system on the web, and probed the possible technology frameworks stands on the state-of-the-art technology stack.
-In the end, we pointed out the reason and drawback of our choices.
+this system on the web, probed the possible technology frameworks and pointed out the reason of our choices.
 
 % 然后，我们详细描述了整个系统能够顺利并合理运行的全部理论细节，首先通过人工特征定义了一个用于计算玩家可信度的PRM，
 % 描述了在这个模型下，对恶意用户进行检测判断的算法。作为 justification，我们给出了这个模型的合理性证明。
@@ -48,18 +50,55 @@ and possible improvements for evaluation outdated, information loss and also gam
 For the future works, we will simply discuss the possible extension of our human computation system,
 along with the thoughts on the interaction between our system and the others in the following sections.
 
-\subsection{Possible Extensions of the System}
-In this section, we will discuss some possible extensions and future works of our human computation system. 
+\subsection{Possible Extensions}
 
-Since in our HC system, we collect human inputs by ROI tagging tasks, we can easily get helps from other similar HC systems. Because some solutions to the problems that occur in this step(image tagging) can be also applied to our system.
+Our system was described in general. We collect human inputs by ROI tagging tasks, 
+which means any other HC system that related to ROI tagging tasks can easily use this system backend design.
+In addition, due to the fact that we do not have enough user inputs at present, we use a certainty algorithm instead of 
+uncertainty probablistic-based algorithm to detect malicious groups. 
+Considering malicious detection is classification problem, which seperate users into trusted groups and untrusted groups. 
+One can apply any classification machine learning algorithms that are more suitable for the detection of malicious groups 
+if our user input dataset is large enough.
 
-In addition, due to the fact that we haven't enough user inputs right now, we use page rank algorithm to detect malicious groups. This dectection is a problem of classification, which seperate users into trusted groups and un-trusted groups. Definitely, some machine learning algorithms are more suitable for the detection of malicious groups once our user input dataset is large enough.
-
-Besides, as already mentioned before, sometimes, the game player may encouter a situation that there is no ROI in some pictures which contain only landscapes like: mountains, rivers and forests. In this case, with the help of image recoginition technique, we can filter out those images from our image database previously so that we can collect more data from the game and make our image tagging game more efficiently. Finally, we can also compare our HC system with a image recognition system and it is perhaps interesting to find out which one is more accurate and efficient.
+Besides, as we mentioned before, sometimes, the game player may encouter a situation that 
+there is no ROI in some pictures which contain only landscapes like: mountains, rivers and forests.
+In this case, with collaborative computing of image recoginition technique, we can filter out those images 
+from our image database previously so that we can collect more data from the game and 
+make our image tagging game more efficiently.
 
 \subsection{Thoughts on Interaction with Other HC System}
 
-TODO: involve implicit interaction
+\paragraph{Google Maps}
+Our HC system is a map-tagged application, so of course, it can interact with Google Maps. 
+We can try to plug the HC task into Google Maps as a hidden toolbar. When some users search the locations in Syria 
+or surrounding countries, the HC task toolbar will be shown and users will be invited to do some tagging tasks 
+of the area where is being searched in Google Maps.
+
+\paragraph{Spotify}
+When users are enjoying some music on a music website, some of them may browse social websites, 
+do their homework or finish some other tasks at the same time. However, there are many other people 
+who just enjoy the music and have no other work. We can try to plug our HC system into some music websites, 
+like Spotify, to invite these people with idle minds and eyes to play our tagging game. 
+It can help them overcome boredom and make the contribution to our HC system in the meantime.\\
+Besides music websites, all other websites where users do not need use their minds and eyes 
+can interact with our HC system in this way.
+
+\paragraph{CAPTCHA System}
+Users are requested to enter CAPTCHA when they log in to some web service. 
+There are some commonly used types of CAPTCHA: Standard Distorted Word CAPTCHA, Picture Identification Captcha, 
+Math Solving Captcha and so forth. We think all these kinds of CAPTCHA are great wastes of 
+the computing power of humankind. If we can find a way to plug our HC system into CAPTCHA system, 
+then we can make an astronomical number of users to contribute to our HC system at that instant. 
+This method will be a breakthrough solution to the lack-of-user problem.\\
+A not very mature method to apply our HC system to CAPTCHA system is that we can develop a CAPTCHA module 
+which can be plugged into any login web pages easily. The CAPTCHA module is based on our disaster monitoring HC system. 
+After the user entering the username and password, he or she will be asked to finish the CAPTCHA module 
+which is an image tagging task. It consists of two images, one is from our Trusted DB 
+where all the data has been already processed and accepted as true, another one is the latest data 
+collected from a disaster area. The user does not know our system architecture and strategy, 
+so he or she has to complete both two tagging tasks wholeheartedly. If the image from the Trusted DB is tagged 
+absolutely correct, then we can regard the user tags for another new image are also reliable. 
+The new tags will be new input to our HC system.
 
 \section*{Acknowledgements}
 \addcontentsline{toc}{section}{\protect\numberline{}Acknowledgements}
