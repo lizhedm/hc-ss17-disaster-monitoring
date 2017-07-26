@@ -205,35 +205,12 @@ where
 \end{definition}
 
 The first part of the definition $\sum_{\text{ROI}\in\text{ROIs}}$ summarized all possible 
-ROI between player $i$ and player $j$. The theoretical item of this formula is the number
-of ROI from player $i$ multiply the number of ROI from player $j$. Nevertheless, it can be
-significantly decreased in this particular scenario. Considering player $i$ and player $j$ 
-with two ROIs as illustrated in figure \ref{fig:performance}.
-
-\begin{figure}[htp]
-\centering
-\includegraphics[width=0.5\columnwidth]{figures/performance}
-\caption{Two players with two ROIs}
-\label{fig:performance}
-\end{figure}
-
-One can expand equation \ref{eq:weight} as follows formula \ref{eq:expand}:
-
-\begin{multline}
-\label{eq:expand}
-w_{ij} = \text{TV}_i \times \left(2-\frac{Cov(T_i, T_j; v)}{Cov(T_i, T_i; v)\times Cov(T_j, T_j; v)}\right) \times \\
-  \left( \frac{\text{ROI}_i^1\cap\text{ROI}_j^1}{\text{ROI}_i^1}           
-  + \frac{\text{ROI}_i^1\cap\text{ROI}_j^2}{\text{ROI}_i^1}           
-  + \frac{\text{ROI}_i^2\cap\text{ROI}_j^1}{\text{ROI}_i^2}           
-  + \frac{\text{ROI}_i^2\cap\text{ROI}_j^1}{\text{ROI}_i^2} \right)
-\end{multline}
-
-Fortunately, the second and the third part of the expansion are equal to zero.
+ROI between player $i$ and player $j$. 
 
 We call the second part $\text{TV}_i \times \frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}$ 
 of formula \ref{eq:weight} as \textbf{Matching Area Ratio (MAR)}. 
 It was inspired by a standard computer vision criteria,
-the so called Intersection over Union (IoU), also known as Jaccard Index in mathematics\cite{real1996probabilistic},
+the so called Intersection over Union (IoU), also known as Jaccard Index \cite{real1996probabilistic},
 which is the standard performance measure that is commonly used for the object category segmentation problem.
 Nevertheless, MAR is not equal to the IoU of ROIs of player $i$  and 
 player $j$ since it only uses the ROI of player $i$ as denominator instead of 
@@ -277,10 +254,9 @@ Three parts are non-negative.
 \[
 w_{ii} = 
 \sum_{\text{ROI}\in\text{ROIs}}{\left(
-  \text{TV}_i \times
   \frac{\text{ROI}_i\cap\text{ROI}_i}{\text{ROI}_i}
-  \left( 2-\frac{Cov(T_i, T_i; v)}
-      {Cov(T_i, T_i; v)\times Cov(T_i, T_i; v)} \right)\right)
+  \left( \frac{Cov(T_i, T_i; v)}
+      {Cov(T_i, T_i; v)\times Cov(T_i, T_i; v)} + 2 \right)\right)
 } = \sum_{\text{ROI}\in\text{ROIs}}{\text{TV}_i} > 0
 \]
 
@@ -345,7 +321,7 @@ with $n$ is the number of current exist tags, and $|\text{tag}_i|$ is the occurr
 in the corresponding area.
 \end{definition}
 
-System like ESP\cite{von2004labeling}, ARTigo\cite{wieser2013artigo} has proved that 
+System like ESP \cite{von2004labeling}, ARTigo \cite{wieser2013artigo} has proved that 
 human inputs are valuable and useful.
 
 Note that sometimes player carries new tags for our system, we also address a solution 
@@ -384,7 +360,7 @@ available dataset grow larger with this step repeatedly, as shown in figure \ref
 \label{fig:cold}
 \end{figure}
 
-The second cold start problem appears in PRM. According to the definition \ref{def:weight} of PRG, the weight
+The second cold start problem appears in PRM. According to the definition \ref{eq:weight} of PRG, the weight
 of PRG was defined by the trust value of all players. Nevertheless, the initial trusted group has
 no trust value. Thus we need an initial value for $TV$. Note that TV\_i is in between of 0 and 1, thus:
 
