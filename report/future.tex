@@ -1,18 +1,13 @@
 \section{Conclusions and Future Works}
 
-In this chapter, we give conclusions of the functionalities, design, success criterion and limitations 
-of our human computation system. 
-Besides, we will discuss the possible extensions of our system and will also give some thoughts on 
-the interaction with other human computation systems.
-
 \subsection{Conclusions}
 
 % 在这份报告中，我们提出了一个全面的针对灾难监控的人肉计算系统，并详细讨论了它数学理论基础、所导致的问题和可能的解决方案。
 % 纵观全文，我们在「introduction」一章中简述了基于GWAPs的人肉计算系统的基本动机，介绍了灾难监控存在的基本问题，
 % 探讨了将人肉计算系统应用到灾难监控这个领域，作为人类一方的贡献应该如何设计。
-In this report, we proposed a comprehensive design of human computation system for disaster monitoring,
+In this report, we proposed a comprehensive design of a human computation system for disaster monitoring,
 and we discussed its mathematical foundations as well as the possible issues caused by this system,
-then gives few options to solve these matters. 
+then gives few options to solve these issues. 
 
 % 在「functionality」一章中，我们给出了一个提供给玩家和利益相关方的 GWAPs-based 的灾难监控的
 % 人肉计算系统原形，并描述了它必备的功能及交互逻辑。
@@ -47,10 +42,9 @@ Undoubtedly, the current system design still contains defects. Thus, we presente
 and possible improvements for evaluation outdated, information loss and also gameplay playability. 
 
 % 作为对进一步未来工作的思考，我们将在剩下的内容里简单讨论该系统一些可能的扩展形式、以及与其他人肉计算系统的交互。
-For the future works, we will simply discuss the possible extension of our human computation system,
-along with the thoughts on the interaction between our system and the others in the following sections.
+For the future works, we will simply discuss the possible extension of our human computation system.
 
-\subsection{Possible Extensions}
+\subsection{Furture Works}
 
 Our system was described in general. We collect human inputs by ROI tagging tasks, 
 which means any other HC system that related to ROI tagging tasks can easily use this system backend design.
@@ -66,48 +60,15 @@ In this case, with collaborative computing of image recoginition technique, we c
 from our image database previously so that we can collect more data from the game and 
 make our image tagging game more efficiently.
 
-\subsection{Thoughts on Interaction with Other HC System}
-
-\paragraph{Google Maps}
-Our HC system is a map-tagged application, so of course, it can interact with Google Maps. 
-We can try to plug the HC task into Google Maps as a hidden toolbar. When some users search the locations in Syria 
-or surrounding countries, the HC task toolbar will be shown and users will be invited to do some tagging tasks 
-of the area where is being searched in Google Maps.
-
-\paragraph{Spotify}
-When users are enjoying some music on a music website, some of them may browse social websites, 
-do their homework or finish some other tasks at the same time. However, there are many other people 
-who just enjoy the music and have no other work. We can try to plug our HC system into some music websites, 
-like Spotify, to invite these people with idle minds and eyes to play our tagging game. 
-It can help them overcome boredom and make the contribution to our HC system in the meantime.\\
-Besides music websites, all other websites where users do not need use their minds and eyes 
-can interact with our HC system in this way.
-
-\paragraph{CAPTCHA System}
-Users are requested to enter CAPTCHA when they log in to some web service. 
-There are some commonly used types of CAPTCHA: Standard Distorted Word CAPTCHA, Picture Identification Captcha, 
-Math Solving Captcha and so forth. We think all these kinds of CAPTCHA are great wastes of 
-the computing power of humankind. If we can find a way to plug our HC system into CAPTCHA system, 
-then we can make an astronomical number of users to contribute to our HC system at that instant. 
-This method will be a breakthrough solution to the lack-of-user problem.\\
-A not very mature method to apply our HC system to CAPTCHA system is that we can develop a CAPTCHA module 
-which can be plugged into any login web pages easily. The CAPTCHA module is based on our disaster monitoring HC system. 
-After the user entering the username and password, he or she will be asked to finish the CAPTCHA module 
-which is an image tagging task. It consists of two images, one is from our Trusted DB 
-where all the data has been already processed and accepted as true, another one is the latest data 
-collected from a disaster area. The user does not know our system architecture and strategy, 
-so he or she has to complete both two tagging tasks wholeheartedly. If the image from the Trusted DB is tagged 
-absolutely correct, then we can regard the user tags for another new image are also reliable. 
-The new tags will be new input to our HC system.
-
 \section*{Acknowledgements}
 \addcontentsline{toc}{section}{\protect\numberline{}Acknowledgements}
-The authors would like to thank Prof. Fran\c{c}ois Bry first for his remarkable lectures as well as
+The authors would like to thank Prof. Fran\c{c}ois Bry first for
 his great suggestions on information leak and loss problems of our disaster monitoring system;
 we also thank Yingding Wang for his helpful discussions on system functionalities design 
 and the model rationalization evaluation;
-Finally, Changkun Ou thanks his schoolmate Huimin An for his insights of Bayesian perspective that
+Finally, we also thank our schoolmate Huimin An for his insights of Bayesian perspective that
 helps us handling human new tag inputs successfully.
 
-The resources of this project are open source on GitHub: \\
+The resources of this project such as paper \LaTeX code, mockup drafts, 
+lab session beamer slides etc. are open source on GitHub: \\
 \url{https://github.com/changkun/hc-ss17-disaster-monitoring}.

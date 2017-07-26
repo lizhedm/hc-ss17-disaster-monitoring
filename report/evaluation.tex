@@ -2,19 +2,21 @@
 
 This chapter discusse the evaluation criteria as well as the issues and solutions on social and ethical aspects.
 Surely, our system still has limitations, we then discusse the most important three limitations within our system: 
-evaluation outdated, information loss and playability.
+outdated evaluation, information loss and playability.
 
 \subsection{Success Criterias}
 
-\subsubsection{Model Evaluation}
+\subsubsection{Model Evaluation with Random Dataset}
 
 Malicious player detection is a classification problem. 
 One can generate random data and test the performance of PRM through accuracy and recall, even ROC curve \cite{hanley1982meaning}.
+TODO: explain here.
 
 The click behavior has been researched for years and address by FFitts Law \cite{bi2013ffitts}.
 It modeled and proved the distribution of click behavior for a certain click goal point is a normal distribution.
 Thus, with probablistic view, the top left corner of ROI exists, then the user click selection 
 for this point should follows normal distribution, as shown in figure \ref{fig:evaluation}.
+TODO: explain precisely. also justify the start point is not important.
 
 \begin{figure}[htp]
 \centering
@@ -34,25 +36,41 @@ evaluate the overall performance of this system, which gives the theoretical eva
 \subsubsection{Issues on Social and Ethical Aspects}
 
 \textbf{Intellectual Property Rights:} 
-Our disaster monitoring HC system is an uncommercial project which invites volunteers to contribute to it. 
+Our disaster monitoring HC system is an non-commercial project which invites volunteers to contribute to it. 
 It is used to help the UNICEF and other non-profit organizations deliver supplies in disaster areas safer. 
-So the IPR should not belong to the volunteer users. In a significant position, user will be informed that 
-his or her contribution to the system is volunteering and the produced data will be used correctly for 
+So the IPR on the annotations should not belong to the volunteer users. In an appropriate manner, user will be informed that 
+his or her contribution to the system is volunteering and the produced data will be used only for 
 monitoring disasters in Syria.
 
 \textbf{Leakage of data:} 
 We cut big satellite image into small segmentations in our HC system to prevent data leakage to ordinary users, 
-but the data security is still very important and needs to be considered with high priority. For example, 
+but the \textbf{data security} (TODO: explain here) is still very important and needs to be considered with high priority. For example, 
 the backend database should not be entirely accessible to every employee of UNICEF. 
 Each of them can only visit the part of data that they need at present. This principle is made to guarantee 
 that data will not be wrongly used and will be included in our future work.
+
+\textbf{Information Loss}
+We cut big region images into small fragements areas to prevent leakage of data. 
+But this method will cause some information loss problem if some important ROIs are 
+located at the intersection of two dividing lines.
+A possible solution for this limitation is to consider new regions that contains the loss
+informations, as shown in figure \ref{fig:information_loss}. Note that this solution that
+only increases the number of region pictures, it does not influence any model and system design.
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.7\columnwidth]{figures/information_loss2}
+\caption{\textbf{Information Loss}: TODO: fix here. Information loss may occurs on the intersection lines, as shown on the left; a possible solution
+is to provide additional regions (blue rectangles) for these special area as shown on the right.}
+\label{fig:information_loss}
+\end{figure}
 
 \subsection{Limitations of the System}
 
 \subsubsection{Evaluation Outdated}
 
 A limitation occurs in our social network based model is each disaster level evaluation get invalid 
-if the region image outdated. 
+if the region image is outdated. 
 We assume the satellite monitors an area and take pictures between intervals. However, our evaluation
 the model only calculate the disaster level at a unique moment, which means the disaster level need 
 transvaluation when a new image comes out.
@@ -68,25 +86,11 @@ At the same time, we also have the historical data of trust value of a player. W
 use time series prediction to predict the player's trust value. But in all of these, the time series
 of disaster level is not stationary but the time series of trust value is stationary.
 
-\subsubsection{Information Loss}
-We cut big region images into small fragements areas to prevent leakage of data. 
-But this method will cause some information loss problem if some important ROIs are 
-located at the intersection of two dividing lines.
-A possible solution for this limitation is to consider new regions that contains the loss
-informations, as shown in figure \ref{fig:information_loss}. Note that this solution that
-only increases the number of region pictures, it does not influence any model and system design.
-
-\begin{figure}[htp]
-\centering
-\includegraphics[width=0.7\columnwidth]{figures/information_loss2}
-\caption{\textbf{Information Loss}: Information loss may occurs on the intersection lines, as shown on the left; a possible solution
-is to provide additional regions (blue rectangles) for these special area as shown on the right.}
-\label{fig:information_loss}
-\end{figure}
+TODO: Fix here by given few prediction method suggestions.
 
 \subsubsection{Gameplay and Playability}
 
-The HC system collects satellite photos of disaster areas. But even if in the disaster areas, 
+The GWAP collects satellite photos of disaster areas. But even if in the disaster areas, 
 not every part of the areas has a disaster. Most parts of the earth are lake, forest, 
 desert and so on, which means the users may meet the situation that there is no available 
 ROI in several continuous rounds. Obviously, it will decrease the playability and enjoyment of the game.
