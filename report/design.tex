@@ -31,7 +31,7 @@ that describes as follows:
 \begin{itemize}
 
 \item [Step 1.]  Player task generating: 
-We propose the \textbf{Player Task Generator (PTG)} 
+We propose the \textbf{Player Task Generator (PTG)}
 that combines trusted results from \textbf{TrustedDB}, 
 and separate new images from satellite, then assign this binding to the future players.
 
@@ -103,7 +103,7 @@ Our player shall evaluate each area, and the evaluation history stories in the h
 ]
 [
  {
-  "area_id": number,
+  "region_id": number,
   "history": [
    {
     "image": string,
@@ -142,26 +142,29 @@ For instance, figure \ref{fig:roi} shows few examples of ROI on different images
 \label{fig:roi}
 \end{figure}
 
+% 通过这个定义，我们可以看到：两个 listing 中的 ROI 被设计为一个数组，因为无论是一个 image task object 还是一个 region 的 image area object, 都
+With this definition, 
+
 \begin{definition}
 \label{def:tagv}
-The \textbf{Tag Vector} $T_i$ of player $i$ is indicated by a vector where the components represent by the count of all tags:
+The \textbf{Tag Vector} $T_{p, i, k}$ of $ROI_{p, i, k}$ (the $i$-th ROI on image $k$ of player $p$) is a vector that 
+is donated by the following formula:
+:
 \[
-  T_i = (|\text{tag}_1|, |\text{tag}_2|, ..., |\text{tag}_n|)
+  T_{p, i, k} = (|\text{tag}_1|, |\text{tag}_2|, ..., |\text{tag}_n|)
 \]
 where 
 \begin{itemize}
+\item $tag_i$ is the $i$-th tag
 \item $n$ is the number of current exist tags;
 \item $|\text{tag}_n|$ is the occurrance of $\text{tag}_n$.
 \end{itemize}
 \end{definition}
-For instance, there are 5 different tags $\text{tag}_1, \text{tag}_2, \text{tag}_3, \text{tag}_4, \text{tag}_5$ exist in the current system,
-player $i$ generates tags list $\{\text{tag}_1, \text{tag}_2, \text{tag}_3\}$, player $j$ generates tag list
-$\{\text{tag}_4, \text{tag}_4, \text{tag}_5\}$. Then $T_i$ of player $i$ is $(1, 1, 1, 0, 0)$ and $T_j$ of player $j$ is $(0, 0, 0, 2, 5)$.
 
 \begin{definition}
 \label{def:weightv}
-The \textbf{weight vector} $v = (p(\text{tag}_1), p(\text{tag}_2), ..., p(\text{tag}_n))$ \textbf{of all tags} 
-can be calculated by the following equation \ref{eq:ptag}:
+The \textbf{Weight Vector} $V = (p(\text{tag}_1), p(\text{tag}_2), ..., p(\text{tag}_n))$ 
+\textbf{of all tags} can be calculated by the following equation \ref{eq:ptag}:
 \begin{equation}
 \label{eq:ptag}
 p(\text{tag}_i) = \frac{|\text{tag}_i|}{\sum_{j=1}^{n}{|\text{tag}_j|}}
@@ -173,30 +176,40 @@ where
 \end{itemize}
 \end{definition}
 
+% For instance, there are 5 different tags $\text{tag}_1, \text{tag}_2, \text{tag}_3, \text{tag}_4, \text{tag}_5$ 
+% exist in the current system,
+% player $i$ generates tags list $\{\text{tag}_1, \text{tag}_2, \text{tag}_3\}$, player $j$ generates tag list
+% $\{\text{tag}_3, \text{tag}_4, \text{tag}_5\}$. Then $T_i$ of player $i$ is $(1, 1, 1, 0, 0)$ and 
+% $T_j$ of player $j$ is $(0, 0, 0, 1, 1)$.
+
 \subsubsection{Player Task Generator}
 
-The \textbf{Player Task Generator (PTG)} combines images from satellite and ResultDB. 
-In the first step, as we discussed before, to solve the imformation leakage problem,
-PTG shall split a monitoring region into $m\times n$ small pieces of images, and also assign a 
-unique \textbf{areaID} for each pieces, i.e. $(\text{areaID}, \text{time})$ 
-specifice a unique image for user tasks. 
+% The \textbf{Player Task Generator (PTG)} combines images from satellite and ResultDB. 
+% In the first step, as we discussed before, to solve the imformation leakage problem,
+% PTG shall split a monitoring region into $m\times n$ small pieces of images, and also assign a 
+% unique \textbf{areaID} for each pieces, i.e. $(\text{areaID}, \text{time})$ 
+% specifice a unique image for user tasks. 
 
-The second generating step is to retrieve tagged images from \textbf{ResultDB}. Then combine
-all images as a user task assign to a new upcoming player. Each user task contains 
-half of untagged pictures and half of tagged images.
+% The second generating step is to retrieve tagged images from \textbf{ResultDB}. Then combine
+% all images as a user task assign to a new upcoming player. Each user task contains 
+% half of untagged pictures and half of tagged images.
 
-In short, The Data Model (only ouput here) for PTG is:
-$\{(\text{areaID}_1, \text{time}_1), ..., (\text{areaID}_n, \text{time}_n)\}$
-with $\text{areaID}_1$ to $\text{areaID}_{\floor{n}}$ are from satellite and 
-$\text{areaID}_{\floor{n}+1}$ to $\text{areaID}_{n}$ are from \textbf{ResultDB}.
+% In short, The Data Model (only ouput here) for PTG is:
+% $\{(\text{areaID}_1, \text{time}_1), ..., (\text{areaID}_n, \text{time}_n)\}$
+% with $\text{areaID}_1$ to $\text{areaID}_{\floor{n}}$ are from satellite and 
+% $\text{areaID}_{\floor{n}+1}$ to $\text{areaID}_{n}$ are from \textbf{ResultDB}.
 
 \subsubsection{Player Rating Model}
 
-This subsection describes the Player Rating Model inside our Disaster Monitoring system.
-PageRank was first proposed by Lary Page \cite{page1999pagerank} and applied to social analysis in \cite{bonacich2001eigenvector}. 
-It is commonly used for expressing the stability of physical systems and the relative importance, 
-so-called centralities, of the nodes of a network. We transfer the basic idea of centralities 
-and use eigenvalue as a \textbf{Trust Value (TV)} for each player to distinguish malicious players.
+% This subsection describes the Player Rating Model inside our Disaster Monitoring system.
+
+% PageRank was first proposed by Lary Page \cite{page1999pagerank} and 
+% applied to social analysis in \cite{bonacich2001eigenvector}. 
+% It is commonly used for expressing the stability of physical systems and the relative importance, 
+% so-called \textbf{centralities}, of the nodes of a network. 
+
+% We transfer the basic idea of centralities of a network
+% and use eigenvalue as \textbf{Trust Value (TV)} for each player to distinguish malicious players.
 
 Considering a partial fully connected directed graph between players. 
 Each player is a node of the Player Rating Graph (PRG) as illustrated in figure \ref{fig:graph}.
@@ -208,69 +221,78 @@ Each player is a node of the Player Rating Graph (PRG) as illustrated in figure 
 \label{fig:graph}
 \end{figure}
 
-To define the edge weight, according to the database field design of a player, each player
-output ROIs for each task region of a player task, and each ROI contains a tags list, thus, 
-one can use three features: $\text{ROI}, \text{tags}, TV$.
+% To define the edge weight, according to the database field design of a player, each player
+% output ROIs for each task region of a player task, and each ROI contains a tags list, thus, 
+% one can use three features: $\text{ROI}, \text{tags}, TV$.
 
 \begin{definition}
-The weight from player $i$ to player $j$ can be formalized as follows formula \ref{eq:weight}:
+For a certain image $k$, the edge weight of the PRG from player $p$ to player $q$ is donated 
+by the following formula: \ref{eq:weight}:
 \begin{equation}
 \label{eq:weight}
-w_{ij} = 
-\sum_{\text{ROI}\in\text{ROIs}}{\left(
-  \text{TV}_i \times
-  \frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}\times
-  \left( 2-\frac{Cov(T_i, T_j; v)}
-      {Cov(T_i, T_i; v)\times Cov(T_j, T_j; v)} \right)\right)
-}
+w_{p,q,k} = 
+\sum_{j=1}^{n}{
+\sum_{i=1}^{m}{ \left(
+  \frac{ | ROI_{p,i,k} \cap ROI_{q,j,k} | }
+       {|ROI_{p,i,k}|}
+  \left(
+    \frac{Cov(T_{p,i,k}, T_{q,j,k}; v)}{Cov(T_{p,i,k}, T_{p,i,k}; v)Cov(T_{q,j,k}, T_{q,j,k}; v)} + 2
+  \right)
+\right)}}
 \end{equation}
 
 where 
 
 \begin{itemize}
-  \item $TV_i$ is the trust value of player $i$;
-  \item $\text{ROI}_i$ is the selected ROI from player $i$;
-  \item $T_i$ is the tags vector of player $i$;
-  \item $Cov(x, y; v)$ is the weighted covariance of $x$ and $y$ via $v$;
-  \item $v$ is the weight vector of all tags.
+\item $ROI_{p, i, k}$ is the $i$-th selected ROI from player $p$;
+\item $|ROI_{p, i, k}|$ is the surface of $ROI_{p, i, k}$;
+\item $v$ is the \textbf{weight vector} of all tags
+\item $T_{p, i, k}$ is the \textbf{tag vector} of $i$-th selected ROI from player $p$;
+\item $Cov(x, y; v)$ is the weighted covariance of $x$ and $y$ via weight vector $v$.
 \end{itemize}
 \end{definition}
 
-The first part of the definition $\sum_{\text{ROI}\in\text{ROIs}}$ summarized all possible 
-ROI between player $i$ and player $j$. 
+% The first part of the definition $\sum_{\text{ROI}\in\text{ROIs}}$ summarized all possible 
+% ROI between player $i$ and player $j$. 
 
-We call the second part $\text{TV}_i \times \frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}$ 
-of formula \ref{eq:weight} as \textbf{Matching Area Ratio (MAR)}. 
-It was inspired by a standard computer vision criteria,
-the so called Intersection over Union (IoU), also known as Jaccard Index \cite{real1996probabilistic},
-which is the standard performance measure that is commonly used for the object category segmentation problem.
-Nevertheless, MAR is not equal to the IoU of ROIs of player $i$  and 
-player $j$ since it only uses the ROI of player $i$ as denominator instead of 
-the union of ROIs of player $i$ and player $j$, which leads the difference between MAR and IoU. 
-There are two reasons to use MAR instead of IoU:
-Firstly, IoU as weight of graph causes the directed graph to an undirected graph due to 
-the IoU of player $i$ to $j$ is as same as the IoU of player $j$ to $i$; Furthermore, 
-player $i$ as the evaluator from $i$ to $j$ should be the performance base.
+% We call the second part $\text{TV}_i \times \frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}$ 
+% of formula \ref{eq:weight} as \textbf{Matching Area Ratio (MAR)}. 
+% It was inspired by a standard computer vision criteria,
+% the so called Intersection over Union (IoU), also known as Jaccard Index \cite{real1996probabilistic},
+% which is the standard performance measure that is commonly used for the object category segmentation problem.
+% Nevertheless, MAR is not equal to the IoU of ROIs of player $i$  and 
+% player $j$ since it only uses the ROI of player $i$ as denominator instead of 
+% the union of ROIs of player $i$ and player $j$, which leads the difference between MAR and IoU. 
+% There are two reasons to use MAR instead of IoU:
+% Firstly, IoU as weight of graph causes the directed graph to an undirected graph due to 
+% the IoU of player $i$ to $j$ is as same as the IoU of player $j$ to $i$; Furthermore, 
+% player $i$ as the evaluator from $i$ to $j$ should be the performance base.
 
-The third part $\frac{Cov(T_i, T_j; v)}{Cov(T_i, T_i; v)\times Cov(T_j, T_j; v)}$
-of formula \ref{eq:weight} is applied by Weighted Pearson Correlation Coefficient.
+% The third part $\frac{Cov(T_i, T_j; v)}{Cov(T_i, T_i; v)\times Cov(T_j, T_j; v)}$
+% of formula \ref{eq:weight} is applied by Weighted Pearson Correlation Coefficient.
 
 To calculate the eigenvalue of the adjacency matrix of PRG, one can use the normalized adjacency matrix 
 through the following formula \ref{eq:normalize}:
 \begin{equation}
 \label{eq:normalize}
-A = (a_{ij}) = (\frac{w_{ij}}{\sum_{j}{w_{ij}}})\\
+A_k = (a_{p,q,k}) = (\frac{w_{p,q,k}}{\sum_{q}{w_{p,q,k}}})
 \end{equation}
 
+where $k$ is the image indicator.
+
 \begin{theorem}
-Matrix $A$ is irreducible, real, non-negative, column-stochastic, and diagonal element being positive.
+The normalized ajacency matrix $A_k$ of PRG of a certain image $k$ is irreducible, real, 
+non-negative, column-stochastic, and diagonal element being positive.
 \end{theorem}
 
 \begin{proof}
-\textbf{Irreducibility}: $A$ is normalized through an ajacency matrix of a strong connected player
-rating graph, which proves $A$ is irreducible.
+\textbf{Irreducibility}: For a certain image $k$, the PRG is strong connected because the
+player who selected ROIs in image $k$ has a direct connection to any other player who also selected ROIs in image $k$ 
+(the edge weight is well defined according to equation \label{eq:weight}).
+Thus, since $A_k$ is an normalized strong connected PRG ajacency matrix, which proves $A_k$ is irreducible.
 
-\textbf{Real elements}: Trivial.
+\textbf{Real elements}: Each part of the equation \label{eq:weight} are real number. Thus, of course,
+the matrix $A_k$ elements are calculated by equation \label{eq:normalize} that are real elements.
 
 \textbf{Non-negative elements}: We only need to prove $\text{TV}_i$, 
 $\frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}$ and 
@@ -401,3 +423,5 @@ TV_{i}^{\text{init}} = \frac{1}{|\text{players}^{\text{init}}|}
 \]
 
 with $|\text{players}^{init}|$ is the number of initial trusted group. 
+
+\subsection{Discussion on image independent model}
