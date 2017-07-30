@@ -1,67 +1,88 @@
 \section{Design}
 
 In this chapter, we describe the overall design of our disaster monitoring backend system in details.
-Firstly, we proposed our system architecture of this disaster monitoring;
-Then we specified and justified our most critical system components such as databases design, 
-Player Task Generator, Player Rating Model as well as Disaster Evaluation Model.
+Firstly, we propose our system architecture of this disaster monitoring;
+Then we specify and justify our most critical system components such as databases design, 
+\textbf{Player Task Generator}, \textbf{Player Rating Model} as well as \textbf{Disaster Evaluation Model}.
 
 With these components, model and databases, the disaster monitoring system can handle
-common problems in HC system, such as cold start, malicious detection, etc. It is also expandable,
-portable and can be easily applied to any other same image selection and tagging based
-human computation system in different areas.
+common problems in HC system, such as cold start, malicious player detection, etc. 
+It is also expandable, portable and can be easily applied to any other same image selection 
+and tagging based HC system in different areas.
 
 \subsection{System Architectures}
 
+Figure \ref{fig:arch} illustrate the overall disaster system design.
+The system databases are composed of two different type of databases. 
+The first database \textbf{PlayerDB} combines \textbf{TrustedDB} and \textbf{UntrustedDB} 
+where persistent the player property and raw tagging inputs whether the overall result is reliable or not.
+The second database is called \textbf{ResultDB} where persistent the reliable player inputs.
+
 \begin{figure}[htp]
 \centering
-\includegraphics[width=\textwidth]{figures/system2}
+\includegraphics[width=0.9\textwidth]{figures/system2}
 \caption{System Design Overview}
 \label{fig:arch}
 \end{figure}
 
-The system contains two different type of databases. The first databases \textbf{PlayerDB}
-combines with \textbf{TrustedDB} and \textbf{UntrustedDB} where presistent 
-the player inputs whether the overall result is reliable or not. 
-We designed a task generator that combines trusted results, and separate new satellite area images assign to future players. 
-A reliable player shall pass the system \textbf{Player Rating Model}. 
-Once the task result from a new player is reliable, then the system will reuse 
-the player input into our \textbf{Disaster Evaluation Model} and persistent it 
-in the second database \textbf{ResultDB}. Stakeholder makes queries to this monitoring database. 
-Figure \ref{fig:arch} illustrate the overall disaster system design.
+For this architecture design, one can simplify the overall data flow into tree main steps 
+that describes as follows:
+
+\begin{itemize}
+
+\item [Step 1.]  Player task generating: 
+We propose the \textbf{Player Task Generator (PTG)} 
+that combines trusted results from \textbf{TrustedDB}, 
+and separate new images from satellite, then assign this binding to the future players.
+
+\item [Step 2.] Malicious player detection: 
+A reliable player shall pass the malicious detection algorithm (describe in \ref{TODO:add})
+inside the \textbf{Player Rating Model (PRM)}. 
+Once the player is not a malicious player, then system will mark all the results from this player
+as a reliable result and then send it into next step.
+
+\item [Step 3.] Evaluating disaster level:  the system reuse the reliable player inputs 
+into \textbf{Disaster Evaluation Model (DEM)} and calculate the disaster level of the monitoring region
+ as well as persistent it in the second database \textbf{ResultDB}.
+
+\end{itemize}
+
+After these three main steps, stakeholders are able to retrieve monitoring results from
+the database \textbf{ResultDB}. 
 
 \subsection{System Components}
 
 \subsubsection{Database Fields}
 
-For the convenience of model establishment, we describe the system database PlayerDB 
-fields as well as the fields of database ResultDB in listing \ref{lst:playerdb}
+We describe the system database PlayerDB 
+fields as well as the fields of database ResultDB first in listing \ref{lst:playerdb}
 and \ref{lst:resultdb}.
 
-In this disaster monitoring system, our participant does not need to register an account,
-and the system shall assign an anonymous\_id for each player, this function significantly 
-accelerate player to participate in this game. Thus, the PlayerDB stores the anonymous\_id
-to detect the same players if they are involved next time. The player will accomplish different
-game tasks; each task result shall store in the tasks filed.
+In this disaster monitoring system, our participants \textbf{do not need to register accounts},
+and the system shall \textbf{assign an anonymous\_id for each player}. 
+This function significantly accelerate player to participate in this game. 
+Thus, the \textbf{PlayerDB} stores the anonymous\_id to detect the same players if they are involved next time. 
+The player will accomplish different game tasks; each task result shall store in the tasks filed.
 
-In the ResultDB, an area ID is unique, and assigned by our system; the disaster\_level field
-represents the level of this area. Our player shall evaluate each area, and the evaluation
-history stories in the history field.
+TODO: fix database design
+
+In the \textbf{ResultDB}, an area ID is unique and assigned by our system. 
+Our player shall evaluate each area, and the evaluation history stories in the history field.
 
 
 \noindent\begin{minipage}{.45\textwidth}
 \begin{lstlisting}[
-    caption={Player Database Fields},
+    caption={Player Database Fields Design},
     label={lst:playerdb}
 ]
 [
  {
   "anonymous_id": number,
-  "reliable": boolean,
-  "trust_value": number
   "tasks": [
    {
-    "image": image_path,
-    "at": time, 
+    "image": string,
+    "at": time,
+    "reliable": boolean,
     "ROI": [
      {
       "latitude": number,
@@ -77,23 +98,22 @@ history stories in the history field.
 \end{minipage}\hfill
 \begin{minipage}{.45\textwidth}
 \begin{lstlisting}[
-  caption={Results Database Fields},
+  caption={Results Database Fields Design},
   label={lst:resultdb}
 ]
 [
  {
   "area_id": number,
-  "disaster_level": number,
   "history": [
    {
-    "at": time,
-    "image": image_path,
+    "image": string,
+    "at": time,   
     "ROI": [
      {
       "latitude": number,
       "longitude": number,
       "tags": [tag1, tag2, ...]
-    }
+     }, ...
    ]
   }, 
   ...
@@ -103,16 +123,28 @@ history stories in the history field.
 \end{lstlisting}
 \end{minipage}
 
-To explain other fields, we describe few basic definition for the system model.
+To explain other fields and establish our models, we describe few basic definition for the system models.
 
 \begin{definition}
 \label{def:roi}
-The \textbf{Region of Interests (ROI)} $ROI_i$ is a player selected area of player $i$.
+The \textbf{Region of Interests (ROI)} is an indicator that represents the one of the selected two dimensional regions from player. 
+The $i$-th ROI from player $p$ in image $k$ at image creation time $t$ is denoted by $ROI_{p,i,k,t}$.
 \end{definition}
+
+Considering image $k$ \textbf{implies} its creation time $t$ (an image alwasy has its creation time), for convenience, 
+we usually \textbf{simplify $ROI_{p,i,k,t}$ to $ROI_{p,i,k}$}.
+For instance, figure \ref{fig:roi} shows few examples of ROI on different images.
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/roi}
+\caption{Examples of Region of Interests (ROI)}
+\label{fig:roi}
+\end{figure}
 
 \begin{definition}
 \label{def:tagv}
-The \textbf{tags vector} $T_i$ of player $i$ is indicated by a vector where the components represent by the count of all tags:
+The \textbf{Tag Vector} $T_i$ of player $i$ is indicated by a vector where the components represent by the count of all tags:
 \[
   T_i = (|\text{tag}_1|, |\text{tag}_2|, ..., |\text{tag}_n|)
 \]
