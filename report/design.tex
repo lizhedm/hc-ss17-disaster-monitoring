@@ -3,7 +3,8 @@
 In this chapter, we describe the overall design of our disaster monitoring backend system in details.
 Firstly, we propose our system architecture of this disaster monitoring;
 Then we specify and justify our most critical system components such as databases design, 
-\textbf{Player Task Generator}, \textbf{Player Rating Model} as well as \textbf{Disaster Evaluation Model}.
+\textbf{Player Task Generator (PTG)\label{idx:ptg}}, \textbf{Player Rating Model (PRM)\label{idx:prm}} 
+as well as \textbf{Disaster Evaluation Model (DEM)\label{idx:dem}}.
 
 With these components, model and databases, the disaster monitoring system can handle
 common problems in HC system, such as cold start, malicious player detection, etc. 
@@ -31,18 +32,18 @@ that describes as follows:
 \begin{itemize}
 
 \item [Step 1.]  Player task generating: 
-We propose the \textbf{Player Task Generator (PTG)}
+We propose the \textbf{\hyperref[idx:ptg]{PTG}}
 that combines trusted results from \textbf{TrustedDB}, 
 and separate new images from satellite, then assign this binding to the future players.
 
 \item [Step 2.] Malicious player detection: 
-A reliable player shall pass the malicious detection algorithm (describe in \ref{TODO:add})
-inside the \textbf{Player Rating Model (PRM)}. 
+A reliable player shall pass the malicious detection algorithm (describe in algorithm \ref{algo:malicious})
+inside the \textbf{\hyperref[idx:prm]{PRM}}. 
 Once the player is not a malicious player, then system will mark all the results from this player
 as a reliable result and then send it into next step.
 
 \item [Step 3.] Evaluating disaster level:  the system reuse the reliable player inputs 
-into \textbf{Disaster Evaluation Model (DEM)} and calculate the disaster level of the monitoring region
+into \textbf{\hyperref[idx:dem]{DEM}} and calculate the disaster level of the monitoring region
  as well as persistent it in the second database \textbf{ResultDB}.
 
 \end{itemize}
@@ -59,76 +60,76 @@ fields as well as the fields of database ResultDB first in listing \ref{lst:play
 and \ref{lst:resultdb}.
 
 In this disaster monitoring system, our participants \textbf{do not need to register accounts},
-and the system shall \textbf{assign an anonymous\_id for each player}. 
+and the system backend shall \textbf{generate and assign an} \emph{player\_id} \textbf{to each player} according to 
+the user scenario (such as IP address, network status, system information et cetera).
 This function significantly accelerate player to participate in this game. 
-Thus, the \textbf{PlayerDB} stores the anonymous\_id to detect the same players if they are involved next time. 
+Thus, the \textbf{PlayerDB} stores the \emph{player\_id} to detect the same players if they participate next time. 
 The player will accomplish different game tasks; each task result shall store in the tasks filed.
-
-TODO: fix database design
-
-In the \textbf{ResultDB}, an area ID is unique and assigned by our system. 
-Our player shall evaluate each area, and the evaluation history stories in the history field.
-
 
 \noindent\begin{minipage}{.45\textwidth}
 \begin{lstlisting}[
-    caption={Player Database Fields Design},
+    caption={Example of Player Database Data},
     label={lst:playerdb}
 ]
 [
  {
-  "anonymous_id": number,
+  "player_id": "E3A6F124-4A6C-4C6E-B7F1-F8BC9A7381CC",
   "tasks": [
    {
-    "image": string,
-    "at": time,
-    "reliable": boolean,
-    "ROI": [
+    "image_id": "3A21E99E-F074-454B-A590-8D8C5ABD8E77",
+    "image_at": "2017-07-31 11:28:40",
+    "reliable": true,
+    "ROIs": [
      {
-      "latitude": number,
-      "longitude": number,
-      "tags": [tag1, tag2, ...]
-     }, ...
+      "x": 103, "y": 121,
+      "height": 56,
+      "width": 78,
+      "tags": ["burning building", "explosion"]
+     }
     ]
    }
   ]
- }, ...
+ }
 ]
 \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}{.45\textwidth}
 \begin{lstlisting}[
-  caption={Results Database Fields Design},
+  caption={Example of Results Database Data},
   label={lst:resultdb}
 ]
 [
  {
-  "region_id": number,
+  "region_id": "FBEB6204-0B94-4811-94F0-9DDC5FBBE6D8",
   "history": [
    {
-    "image": string,
-    "at": time,   
-    "ROI": [
+    "image_id": "3A21E99E-F074-454B-A590-8D8C5ABD8E77",
+    "image_at": "2017-07-31 11:28:40",
+    "ROIs": [
      {
-      "latitude": number,
-      "longitude": number,
-      "tags": [tag1, tag2, ...]
-     }, ...
-   ]
-  }, 
-  ...
- ]
-}, ...
+      "x": 103, "y": 121,
+      "height": 56,
+      "width": 78,
+      "tags": ["burning building", "explosion"]
+     }
+    ]
+   }
+  ]
+ }
 ]
 \end{lstlisting}
 \end{minipage}
 
-To explain other fields and establish our models, we describe few basic definition for the system models.
+In the \textbf{ResultDB}, a \emph{region\_id} is unique and assigned by our system. A region has its
+monitoring history and composed by its separate images, the only difference between PlayerDB and ResultDB is
+ResultDB only stores reliable data (no \emph{reliable} field) and images organized by its related region.
+
+To explain other fields and establish our models, we describe few basic definitions for the system models first.
 
 \begin{definition}
 \label{def:roi}
-The \textbf{Region of Interests (ROI)} is an indicator that represents the one of the selected two dimensional regions from player. 
-The $i$-th ROI from player $p$ in image $k$ at image creation time $t$ is denoted by $ROI_{p,i,k,t}$.
+\emph{The \textbf{Region of Interests (ROI)} is an indicator that represents the one of the selected two dimensional regions from player. 
+The $i$-th ROI from player $p$ in image $k$ at image creation time $t$ is denoted by $ROI_{p,i,k,t}$.}
 \end{definition}
 
 Considering image $k$ \textbf{implies} its creation time $t$ (an image alwasy has its creation time), for convenience, 
@@ -142,24 +143,90 @@ For instance, figure \ref{fig:roi} shows few examples of ROI on different images
 \label{fig:roi}
 \end{figure}
 
-% 通过这个定义，我们可以看到：两个 listing 中的 ROI 被设计为一个数组，因为无论是一个 image task object 还是一个 region 的 image area object, 都
-With this definition, 
+With this definition, our system players are able to select ROIs for each image as well as capable of select tags for each ROI.
+Thus, the \emph{tasks} field in PlayerDB is an array object, stores each player image result with an assigned \emph{image\_id}.
+Each object in the \emph{tasks} array has a field \emph{reliable}, which indicates the reliability for this object task;
+Each object also contains a \emph{ROIs} field, which is an array object that contains the player inputs for this object image;
+Each ROI object in the ROIs field has four properties that describes the ROI geometric location: \emph{x, y, height, width}, and 
+also a \emph{tags} array field that describes the input tags for this image from this player.
+
+For \emph{tags} field,
+game players select the related tags for each ROI, and stores in this array. \textbf{Each tag can only selects once, 
+and players allow to input their own new tags for this ROI.} Then, We define the ROI tag vector for the model design:
 
 \begin{definition}
 \label{def:tagv}
-The \textbf{Tag Vector} $T_{p, i, k}$ of $ROI_{p, i, k}$ (the $i$-th ROI on image $k$ of player $p$) is a vector that 
-is donated by the following formula:
-:
+\emph{Assuming the database stores $n$ different tags $\text{tag}_1, \text{tag}_2, ..., \text{tag}_n$ for a certain image $k$,
+the \textbf{Tag Vector} $T_{p, i, k}$ of $ROI_{p, i, k}$ (the $i$-th ROI in image $k$ of player $p$) is a vector that 
+is donated by the following formula:}
+
 \[
   T_{p, i, k} = (|\text{tag}_1|, |\text{tag}_2|, ..., |\text{tag}_n|)
 \]
-where 
+\emph{where
 \begin{itemize}
-\item $tag_i$ is the $i$-th tag
-\item $n$ is the number of current exist tags;
-\item $|\text{tag}_n|$ is the occurrance of $\text{tag}_n$.
-\end{itemize}
+\item $tag_i$ is the $i$-th tag;
+\item $n$ is the number of tags;
+\item $|\text{tag}_i|$ is the count of $\text{tag}_i$ in a task object.
+\end{itemize}}
 \end{definition}
+
+Note that due to each tag can only selects once, the components of tag vector is either 1 or 0 in reality.
+For instance, for a certain image $k$,
+there are 5 different tags $\text{tag}_1, \text{tag}_2, \text{tag}_3, \text{tag}_4, \text{tag}_5$ were inputed
+by our game player.
+Assuming player $p$ selects the first ROI and inputs tags for $ROI_{p, 1, k}$: 
+$\{\text{tag}_1, \text{tag}_2, \text{tag}_3, \text{tag}_4\}$, 
+player $q$ selects the first ROI and inputs tags for $ROI_{q, 1, k}$:
+$\{\text{tag}_1, \text{tag}_3, \text{tag}_4, \text{tag}_5\}$. 
+Then tag vector $T_{p, 1, k}$ of $ROI_{p, 1, k}$ is $(1, 1, 1, 1, 0)$ and tag vector
+$T_{q, 1, k}$ of $ROI_{q, 1, k}$ is $(1, 0, 1, 1, 1)$.
+
+\subsubsection{Player Task Generator}
+
+The \textbf{\hyperref[idx:ptg]{PTG}} combines task images from satellite and ResultDB.
+A player task contains $2n$ different images in random order, that $n$ images are
+the untagged new satellite images and $n$ images are tagged images of ResultDB, which means
+\hyperref[idx:ptg]{PTG} contains two generating steps:
+
+\begin{itemize}
+\item [Step 1.] \hyperref[idx:ptg]{PTG} shall split a monitoring region into small pieces of images, 
+and also assign a unique \textbf{image\_id} for each piece 
+(The reason is discussed in section \ref{chapter:ethical} for the leakage of data).
+
+\item [Step 2.] \hyperref[idx:ptg]{PTG} shall retrieve tagged images from ResultDB. Then combine
+all images as a user task assign to a new upcoming player.
+\end{itemize}
+
+\subsubsection{Player Rating Model}
+
+This subsection describes the \textbf{\hyperref[idx:prm]{PRM}} as well as its detection algorithm 
+inside our Disaster Monitoring system.
+The \hyperref[idx:prm]{PRM} is responsible for detect malicious players regarding their game task inputs.
+
+PageRank was first proposed by Lary Page \cite{page1999pagerank} and 
+applied to social analysis in \cite{bonacich2001eigenvector}. 
+It is commonly used for expressing the stability of physical systems and the relative importance, 
+so-called \textbf{centralities}, of the nodes of a network. 
+We transfer the basic idea of centralities of a network
+and use eigenvalue as the trust value for each player to distinguish malicious players and reliable players.
+
+We establish the model in image dependent perspective. For a certain image $k$,
+considering a directed \textbf{Player Rating Graph (PRG)\label{idx:prg}} 
+between players who tagged the image $k$. Each player is a node of PRG, 
+as illustrated in figure \ref{fig:graph2}. To define the graph weight, we introduce few input measurement
+
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.3\columnwidth]{figures/graph}
+\caption{Player Rating Model}
+\label{fig:graph}
+\end{figure}
+
+% To define the edge weight, according to the database field design of a player, each player
+% output ROIs for each task region of a player task, and each ROI contains a tags list, thus, 
+% one can use three features: $\text{ROI}, \text{tags}, TV$.
 
 \begin{definition}
 \label{def:weightv}
@@ -176,54 +243,29 @@ where
 \end{itemize}
 \end{definition}
 
-% For instance, there are 5 different tags $\text{tag}_1, \text{tag}_2, \text{tag}_3, \text{tag}_4, \text{tag}_5$ 
-% exist in the current system,
-% player $i$ generates tags list $\{\text{tag}_1, \text{tag}_2, \text{tag}_3\}$, player $j$ generates tag list
-% $\{\text{tag}_3, \text{tag}_4, \text{tag}_5\}$. Then $T_i$ of player $i$ is $(1, 1, 1, 0, 0)$ and 
-% $T_j$ of player $j$ is $(0, 0, 0, 1, 1)$.
+\begin{definition}
+\label{def:prmr}
+The \textbf{Player ROI Matching Ratio (PRMR)} is an importance measurement that measures 
+two different ROI intersection surface from player $p$ to player $q$ in a certain image $k$, 
+which is donated by the following formula:
+\begin{equation}
+\text{PRMR}(p, q, i, j, k) = \frac{| ROI_{p,i,k} \cap ROI_{q,j,k} | }
+       {|ROI_{p,i,k}|}
+\end{equation}
+\end{definition}
 
-\subsubsection{Player Task Generator}
+\begin{definition}
+\label{def:ptc}
 
-% The \textbf{Player Task Generator (PTG)} combines images from satellite and ResultDB. 
-% In the first step, as we discussed before, to solve the imformation leakage problem,
-% PTG shall split a monitoring region into $m\times n$ small pieces of images, and also assign a 
-% unique \textbf{areaID} for each pieces, i.e. $(\text{areaID}, \text{time})$ 
-% specifice a unique image for user tasks. 
+The \textbf{Player Input Tags Correlation (PITC)} is defined by weighted Pearson Correlation, 
+which is donated by the following formula:
+\begin{equation}
+\text{PITC}(p, q, i, j, k) = \frac{Cov(T_{p,i,k}, T_{q,j,k}; v)}{Cov(T_{p,i,k}, T_{p,i,k}; v)}
+\end{equation}
+\end{definition}
 
-% The second generating step is to retrieve tagged images from \textbf{ResultDB}. Then combine
-% all images as a user task assign to a new upcoming player. Each user task contains 
-% half of untagged pictures and half of tagged images.
-
-% In short, The Data Model (only ouput here) for PTG is:
-% $\{(\text{areaID}_1, \text{time}_1), ..., (\text{areaID}_n, \text{time}_n)\}$
-% with $\text{areaID}_1$ to $\text{areaID}_{\floor{n}}$ are from satellite and 
-% $\text{areaID}_{\floor{n}+1}$ to $\text{areaID}_{n}$ are from \textbf{ResultDB}.
-
-\subsubsection{Player Rating Model}
-
-% This subsection describes the Player Rating Model inside our Disaster Monitoring system.
-
-% PageRank was first proposed by Lary Page \cite{page1999pagerank} and 
-% applied to social analysis in \cite{bonacich2001eigenvector}. 
-% It is commonly used for expressing the stability of physical systems and the relative importance, 
-% so-called \textbf{centralities}, of the nodes of a network. 
-
-% We transfer the basic idea of centralities of a network
-% and use eigenvalue as \textbf{Trust Value (TV)} for each player to distinguish malicious players.
-
-Considering a partial fully connected directed graph between players. 
-Each player is a node of the Player Rating Graph (PRG) as illustrated in figure \ref{fig:graph}.
-
-\begin{figure}[htp]
-\centering
-\includegraphics[width=0.3\columnwidth]{figures/graph}
-\caption{Player Rating Model}
-\label{fig:graph}
-\end{figure}
-
-% To define the edge weight, according to the database field design of a player, each player
-% output ROIs for each task region of a player task, and each ROI contains a tags list, thus, 
-% one can use three features: $\text{ROI}, \text{tags}, TV$.
+Note that the PRMR and PITC both are not metrics due to $\text{PRMR}(p, q, i, j, k) \neq \text{PRMR}(q, p, i, j, k)$ as well as
+$\text{PITC}(p, q, i, j, k) \neq \text{PITC}(q, p, i, j, k)$
 
 \begin{definition}
 For a certain image $k$, the edge weight of the PRG from player $p$ to player $q$ is donated 
@@ -233,10 +275,9 @@ by the following formula: \ref{eq:weight}:
 w_{p,q,k} = 
 \sum_{j=1}^{n}{
 \sum_{i=1}^{m}{ \left(
-  \frac{ | ROI_{p,i,k} \cap ROI_{q,j,k} | }
-       {|ROI_{p,i,k}|}
+  \text{PRMR}(p, q, i, j, k)
   \left(
-    \frac{Cov(T_{p,i,k}, T_{q,j,k}; v)}{Cov(T_{p,i,k}, T_{p,i,k}; v)Cov(T_{q,j,k}, T_{q,j,k}; v)} + 2
+    \text{PITC}(p, q, i, j, k) + 2
   \right)
 \right)}}
 \end{equation}
@@ -333,6 +374,7 @@ This definition can represent the rating score from $i$ to $j$. With the trust v
 we propose our classification algorithm:
 
 \begin{algorithm}[H]
+\label{algo:malicious}
 \SetAlgoLined
 \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
 \Input{anonymous IDs, TVs}
@@ -394,7 +436,8 @@ To sum up, the input and the output Data Model of DEM addresse as follows. For i
 $(\text{time})$, $(\text{area\_id})$ or $(\text{area\_id}, \text{time})$; For output:
 $(\text{area\_id}, \text{time}, \text{disaster\_level})$.
 
-\subsection{Model Initialization and System Cold Start}
+\subsection{Model Initialization}
+\label{chapter:modelinit}
 
 A cold start of such a system is a common problem in human computation system that 
 is avoided by hiring people to play or learn as long as 
