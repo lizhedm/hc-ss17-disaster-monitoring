@@ -1,8 +1,12 @@
 \documentclass[paper=a4, fontsize=11pt]{scrartcl}
+\usepackage{authblk}
 \usepackage[T1]{fontenc}
 \usepackage{fourier} 
 \usepackage[english]{babel} 
 \usepackage{amsmath,amsfonts,amsthm} 
+\usepackage{chngcntr}
+\counterwithout{equation}{subsection}
+\counterwithout{equation}{section}
 \newtheorem{theorem}{Theorem}
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
@@ -61,26 +65,29 @@
 \newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
 
 % TODO: comment here after finished
-% \usepackage{draftwatermark}
-% \SetWatermarkText{DRAFT}
-% \SetWatermarkScale{1}
+\usepackage{draftwatermark}
+\SetWatermarkText{DRAFT}
+\SetWatermarkScale{1}
 
 \title{	
 \normalfont \normalsize 
 \textsc{Final Team Report for ``Human Computation'', Summer Term 2017, IFI LMU} \\ [25pt]
 \horrule{0.5pt} \\[0.4cm]
 \huge Final Team Report: \\
-A Novel GWAP Disaster Monitoring System\\
+\textmd{A Novel GWAP Disaster Monitoring System}\\
 \horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
 }
 \author{
-  \\ Team: Hotpot\\
-  Changkun Ou\\
-  Yifei Zhan\\
-  Zhe Li\\
-Lercture Human Computation\\
-Institute for Informatics, \\
-Ludwig-Maximilian University of Munich, Germany}
+  \underline{Team \emph{\textsf{Hotpot}}}\\
+  Changkun Ou\textsuperscript{*},
+  Yifei Zhan\textsuperscript{\dag} and
+  Zhe Li\textsuperscript{\ddag}
+}
+\affil{ \normalsize
+  Lercture Human Computation\\
+  \textit{Institute for Informatics, Ludwig-Maximilian University of Munich, Germany}\\
+  \emph{\{changkun.ou\textsuperscript{*}, yifei.zhan\textsuperscript{\dag}, li.zhe\textsuperscript{\ddag}\}@campus.lmu.de}
+}
 \date{\today}
 
 \begin{document}
