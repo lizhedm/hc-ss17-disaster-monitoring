@@ -33,7 +33,7 @@ that describes as follows:
 
 \item [Step 1.]  Player task generating: 
 We propose the \textbf{\hyperref[idx:ptg]{PTG}}
-that combines trusted results from \textbf{TrustedDB}, 
+that combines trusted results from TrustedDB, 
 and separate new images from satellite, then assign this binding to the future players.
 
 \item [Step 2.] Malicious player detection: 
@@ -44,12 +44,12 @@ as a reliable result and then send it into next step.
 
 \item [Step 3.] Evaluating disaster level:  the system reuse the reliable player inputs 
 into \textbf{\hyperref[idx:dem]{DEM}} and calculate the disaster level of the monitoring region
- as well as persistent it in the second database \textbf{ResultDB}.
+ as well as persistent it in the second database ResultDB.
 
 \end{itemize}
 
 After these three main steps, stakeholders are able to retrieve monitoring results from
-the database \textbf{ResultDB}. 
+the database ResultDB. 
 
 \subsection{System Components}
 
@@ -159,19 +159,18 @@ and players allow to input their own new tags for this ROI.} Then, We define the
 \emph{Assuming the database stores $n$ different tags $\text{tag}_1, \text{tag}_2, ..., \text{tag}_n$ for a certain image $k$,
 the \textbf{Tag Vector} $T_{p, i, k}$ of $ROI_{p, i, k}$ (the $i$-th ROI in image $k$ of player $p$) is a vector that 
 is donated by the following formula:}
-
-\[
+\begin{equation}
   T_{p, i, k} = (|\text{tag}_1|, |\text{tag}_2|, ..., |\text{tag}_n|)
-\]
+\end{equation}
 \emph{where
 \begin{itemize}
-\item $tag_i$ is the $i$-th tag;
+\item $\text{tag}_i$ is the $i$-th tag;
 \item $n$ is the number of tags;
-\item $|\text{tag}_i|$ is the count of $\text{tag}_i$ in a task object.
+\item $|\text{tag}_i|$ is the count of $\text{tag}_i$ in a player task object.
 \end{itemize}}
 \end{definition}
 
-Note that due to each tag can only selects once, the components of tag vector is either 1 or 0 in reality.
+Note that due to each tag can only selects once, the components of tag vector is \textbf{either 1 or 0} in reality.
 For instance, for a certain image $k$,
 there are 5 different tags $\text{tag}_1, \text{tag}_2, \text{tag}_3, \text{tag}_4, \text{tag}_5$ were inputed
 by our game player.
@@ -214,23 +213,22 @@ and use eigenvalue as the trust value for each player to distinguish malicious p
 We establish the model in image dependent perspective. For a certain image $k$,
 considering a directed \textbf{Player Rating Graph (PRG)\label{idx:prg}} 
 between players who tagged the image $k$. Each player is a node of PRG, 
-as illustrated in figure \ref{fig:graph2}. To define the graph weight, we introduce few input measurement
-
+as illustrated in figure \ref{fig:graph}. 
 
 \begin{figure}[htp]
 \centering
-\includegraphics[width=0.3\columnwidth]{figures/graph}
+\includegraphics[width=0.5\columnwidth]{figures/graph2}
 \caption{Player Rating Model}
 \label{fig:graph}
 \end{figure}
-
 % To define the edge weight, according to the database field design of a player, each player
 % output ROIs for each task region of a player task, and each ROI contains a tags list, thus, 
 % one can use three features: $\text{ROI}, \text{tags}, TV$.
 
 \begin{definition}
 \label{def:weightv}
-The \textbf{Weight Vector} $V = (p(\text{tag}_1), p(\text{tag}_2), ..., p(\text{tag}_n))$ 
+Assuming the database stores $n$ different tags $\text{tag}_1, \text{tag}_2, ..., \text{tag}_n$ in the system,
+The \textbf{System Weight Vector} $v = (p(\text{tag}_1), p(\text{tag}_2), ..., p(\text{tag}_n))$ 
 \textbf{of all tags} can be calculated by the following equation \ref{eq:ptag}:
 \begin{equation}
 \label{eq:ptag}
@@ -241,35 +239,150 @@ where
 \item $n$ is the number of current exist tags;
 \item $|\text{tag}_i|$ is the occurrance of $\text{tag}_i$.
 \end{itemize}
+The \textbf{Image Weight Vector} $v_k = $
 \end{definition}
+
+To go so far as to this system, our player have two different type of inputs: \textbf{the \hyperref[def:roi]{ROI}, 
+and its \hyperref[def:tagv]{Tag Vector}}. To define the \hyperref[idx:prg]{PRG} edge weight, 
+we introduce two input measurements in the subsequent definition \ref{def:prmr} and \ref{def:pitc}.
 
 \begin{definition}
 \label{def:prmr}
-The \textbf{Player ROI Matching Ratio (PRMR)} is an importance measurement that measures 
-two different ROI intersection surface from player $p$ to player $q$ in a certain image $k$, 
+The \textbf{Players ROI Matching Ratio (PRMR)} is an importance measurement that measures the proportion of
+two different \hyperref[def:roi]{ROI} intersection surface from player $p, q$ and 
+the \hyperref[def:roi]{ROI} surface from player $p$ in a certain image $k$, 
 which is donated by the following formula:
 \begin{equation}
 \text{PRMR}(p, q, i, j, k) = \frac{| ROI_{p,i,k} \cap ROI_{q,j,k} | }
        {|ROI_{p,i,k}|}
 \end{equation}
+where
+\begin{itemize}
+\item $ROI_{p, i, k}$ is the $i$-th selected ROI from player $p$;
+\item $|ROI_{p, i, k}|$ is the surface of $ROI_{p, i, k}$;
+\end{itemize}
 \end{definition}
+
+\begin{theorem}
+\begin{equation}
+\label{eq:prmrrange}
+0 \leq \text{PRMR}(p, q, i, j, k) \leq 1.
+\end{equation}
+\end{theorem}
+\begin{proof}
+According to the definition of \hyperref[def:roi]{ROI}, $| ROI_{p,i,k} \cap ROI_{q,j,k} |$ 
+can archive its maximum value only and only if $ROI_{p,i,k} =  ROI_{q,j,k}$ 
+as well as its minimum value only and only if $ROI_{p,i,k}$ has no intersection with $ROI_{q,j,k}$.
+Thus:
+\[
+0 = \frac{0}{|ROI_{p,i,k}|} \leq \text{PRMR}(p, q, i, j, k) \leq
+\frac{| ROI_{p,i,k} \cap ROI_{p,i,k} | }{|ROI_{p,i,k}|} = \frac{|ROI_{p,i,k}|}{|ROI_{p,i,k}|} = 1.
+\]
+\end{proof}
 
 \begin{definition}
-\label{def:ptc}
-
-The \textbf{Player Input Tags Correlation (PITC)} is defined by weighted Pearson Correlation, 
-which is donated by the following formula:
+\label{def:pitc}
+The \textbf{Players Input Tag Correlation (PITC)} is an importance measurement that measures the proportion of
+the covariance of two different \hyperref[def:tagv]{Tag Vector $T_{p,i,k}, T_{q,j,k}$} from player $p, q$ and the covariance of $T_{p,i,k}$ from player $p$ with itself under the
+\hyperref[def:weightv]{Weight Vector $v_k$}, which is donated by the following formula:
 \begin{equation}
-\text{PITC}(p, q, i, j, k) = \frac{Cov(T_{p,i,k}, T_{q,j,k}; v)}{Cov(T_{p,i,k}, T_{p,i,k}; v)}
+\text{PITC}(p, q, i, j, k) = \frac{Cov(T_{p,i,k}, T_{q,j,k}; v_k)}{Cov(T_{p,i,k}, T_{p,i,k}; v_k)}
 \end{equation}
+where $Cov(X, Y; w)$ is the weighted covariance between $X$ and $Y$, which donated by:
+\begin{equation}
+\label{eq:cov}
+Cov(X, Y; w) = \frac{\sum_{i=1}^{n}{w_i(x_i-\frac{1}{n}\sum_{i=1}^{n}{w_i x_i})(y_i-\frac{1}{n}\sum_{i=1}^{n}{w_i y_i})}}{\sum_{i=1}^{n}{w_i}}
+\end{equation}
+with $X = (x_1, x_2, ..., x_n), Y = (y_1, y_2, ..., y_n), w = (w_1, w_2, ..., w_n)$.
 \end{definition}
 
-Note that the PRMR and PITC both are not metrics due to $\text{PRMR}(p, q, i, j, k) \neq \text{PRMR}(q, p, i, j, k)$ as well as
-$\text{PITC}(p, q, i, j, k) \neq \text{PITC}(q, p, i, j, k)$
+Note that
+
+\begin{enumerate}
+\item The definition of PRMR and PITC share the same intent for measureing asymmetric importance  
+      between player $p$ and player $q$ (how $p$ think of $q$);
+\item The definition of PRMR is inspired by a wide-used computer vision criteria, the so called Intersection over Union (IoU), 
+      also as known as Jaccard Index \cite{real1996probabilistic, wiki:JaccardIndex},
+      which is a statistic used for comparing the similarity and diversity of sample sets. 
+      However, in our case, we only divided by to guarantee the asymmetric property for directed graph weight;
+\item The definition of PITC is inspired by a weighted Pearson Correlation Coefficient \cite{wiki:PearsonCorrelationCoefficient},
+      which is a measure of the linear correlation between two variables. In our case, with the same intent of PRMR, 
+      we \textbf{drop} the
+      part of covariance of player $q$ in denominator to guarantee the asymmetric property for directed graph weight; 
+\item The PRMR and PITC both \textbf{are not metrics} due to $\text{PRMR}(p, q, i, j, k) \neq \text{PRMR}(q, p, i, j, k)$ as well as
+$\text{PITC}(p, q, i, j, k) \neq \text{PITC}(q, p, i, j, k)$.
+\end{enumerate}
+
+\begin{theorem}
+\begin{equation}
+\label{eq:pitcrange}
+-1 \leq \text{PITC}(p, q, i, j, k) \leq 1.
+\end{equation}
+\end{theorem}
+\begin{proof}
+We know that the weighted Pearson Correlation Coefficient \cite{wiki:PearsonCorrelationCoefficient} lies on $[-1, 1]$, i.e.
+\[
+  -1 \leq \frac{Cov(T_{p,i,k}, T_{q,j,k}; v_k)}{\sqrt{Cov(T_{p,i,k}, T_{p,i,k}; v_k)Cov(T_{q,j,k}, T_{q,j,k}; v_k)}} \leq 1
+\]
+To prove equation \ref{eq:pitcrange}, we have to show:
+\begin{multline}
+  \frac{Cov(T_{p,i,k}, T_{q,j,k}; v_k)}{Cov(T_{p,i,k}, T_{p,i,k}; v_k)} \\
+  \leq |Cov(T_{q,j,k}, T_{q,j,k}; v_k)\sqrt{Cov(T_{p,i,k}, T_{p,i,k}; v_k)Cov(T_{q,j,k}, T_{q,j,k}; v_k)}| \leq 1
+\end{multline}
+and
+\begin{multline}
+  \frac{Cov(T_{p,i,k}, T_{q,j,k}; v_k)}{Cov(T_{p,i,k}, T_{p,i,k}; v_k)} \\
+  \geq -|Cov(T_{q,j,k}, T_{q,j,k}; v_k)\sqrt{Cov(T_{p,i,k}, T_{p,i,k}; v_k)Cov(T_{q,j,k}, T_{q,j,k}; v_k)}| \geq -1
+\end{multline}
+Then we need to show:
+\begin{equation}
+0 \leq Cov(T_{p,i,k}, T_{p,i,k}; v_k)Cov(T_{q,j,k}, T_{q,j,k}; v_k)^3 \leq 1
+\end{equation}
+Considering $T_{p,i,k}, T_{q,i,k}$ are described in general, with equation \ref{eq:cov}, 
+we only need to show (\textbf{$s$ is an vector components index} instead of exponential):
+\begin{equation}
+0 \leq Cov(T_{p,i,k}, T_{p,i,k}; v_k) = 
+\frac{
+  \sum_{s=1}^{n}{
+    v_{k}^s
+    \left(T_{p,i,k}^s - \frac{1}{n}\sum_{s=1}^{n}{v_{k}^s T_{p,i,k}^s}\right)^2
+  }
+}{
+  \sum_{s=1}^{n}{v_{k}^s}
+} \leq 1
+\end{equation}
+According to the definition of \hyperref[def:tagv]{Tag Vector} and \hyperref[def:weightv]{Weight Vector},
+the components of $T_{p,i,k}$ are either 1 or 0, 
+the components of $v_k$ lies on $[0, 1]$, then we have:
+\begin{equation}
+0 \leq \left(T_{p,i,k}^s - \frac{1}{n}\sum_{s=1}^{n}{v_{k}^s T_{p,i,k}^s}\right)^2 \leq 1
+\end{equation}
+Therefore,
+\begin{equation}
+0 = \frac{
+  \sum_{s=1}^{n}{
+    v_{k}^s \cdot 0
+  }
+}{
+  \sum_{s=1}^{n}{v_{k}^s}
+} 
+\leq Cov(T_{p,i,k}, T_{p,i,k}; v_k) \leq
+\frac{
+  \sum_{s=1}^{n}{
+    v_{k}^s \cdot 1
+  }
+}{
+  \sum_{s=1}^{n}{v_{k}^s}
+} = 1
+\end{equation}
+which proves equation \ref{eq:pitcrange}.
+\end{proof}
+
+
 
 \begin{definition}
 For a certain image $k$, the edge weight of the PRG from player $p$ to player $q$ is donated 
-by the following formula: \ref{eq:weight}:
+by the formula \ref{eq:weight}:
 \begin{equation}
 \label{eq:weight}
 w_{p,q,k} = 
@@ -281,16 +394,6 @@ w_{p,q,k} =
   \right)
 \right)}}
 \end{equation}
-
-where 
-
-\begin{itemize}
-\item $ROI_{p, i, k}$ is the $i$-th selected ROI from player $p$;
-\item $|ROI_{p, i, k}|$ is the surface of $ROI_{p, i, k}$;
-\item $v$ is the \textbf{weight vector} of all tags
-\item $T_{p, i, k}$ is the \textbf{tag vector} of $i$-th selected ROI from player $p$;
-\item $Cov(x, y; v)$ is the weighted covariance of $x$ and $y$ via weight vector $v$.
-\end{itemize}
 \end{definition}
 
 % The first part of the definition $\sum_{\text{ROI}\in\text{ROIs}}$ summarized all possible 
@@ -329,11 +432,11 @@ non-negative, column-stochastic, and diagonal element being positive.
 \begin{proof}
 \textbf{Irreducibility}: For a certain image $k$, the PRG is strong connected because the
 player who selected ROIs in image $k$ has a direct connection to any other player who also selected ROIs in image $k$ 
-(the edge weight is well defined according to equation \label{eq:weight}).
+(the edge weight is well defined according to equation \ref{eq:weight}).
 Thus, since $A_k$ is an normalized strong connected PRG ajacency matrix, which proves $A_k$ is irreducible.
 
-\textbf{Real elements}: Each part of the equation \label{eq:weight} are real number. Thus, of course,
-the matrix $A_k$ elements are calculated by equation \label{eq:normalize} that are real elements.
+\textbf{Real elements}: Each part of the equation \ref{eq:weight} are real number. Thus, of course,
+the matrix $A_k$ elements are calculated by equation \ref{eq:normalize} that are real elements.
 
 \textbf{Non-negative elements}: We only need to prove $\text{TV}_i$, 
 $\frac{\text{ROI}_i\cap\text{ROI}_j}{\text{ROI}_i}$ and 
@@ -467,4 +570,4 @@ TV_{i}^{\text{init}} = \frac{1}{|\text{players}^{\text{init}}|}
 
 with $|\text{players}^{init}|$ is the number of initial trusted group. 
 
-\subsection{Discussion on image independent model}
+\subsection{Discussion on Image Independent Model}
