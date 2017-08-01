@@ -218,12 +218,9 @@ as illustrated in figure \ref{fig:graph}.
 \begin{figure}[htp]
 \centering
 \includegraphics[width=0.5\columnwidth]{figures/graph2}
-\caption{Player Rating Model}
+\caption{Player Rating Graph for Certain Images}
 \label{fig:graph}
 \end{figure}
-% To define the edge weight, according to the database field design of a player, each player
-% output ROIs for each task region of a player task, and each ROI contains a tags list, thus, 
-% one can use three features: $\text{ROI}, \text{tags}, TV$.
 
 \begin{definition}
 \label{def:weightv}
@@ -292,7 +289,7 @@ where
 \label{lemma:prmrrange}
 \begin{equation}
 \label{eq:prmrrange}
-0 \leq \text{PRMR}(p, q, i, j, k) \leq 1.
+0 \leq \text{PRMR}(p, q, i, j, k) \leq 1
 \end{equation}
 \end{lemma}
 \begin{proof}
@@ -477,7 +474,7 @@ w_{p,q,k} =
 \right)}} = 0
 \]
 that $w_{p,q,k}$ has its minimum value when $\text{PRMR}(p, q, i, j, k) = 0 (for all i=1,...,m; j=1,...,n)$ 
-and $\text{PITC}(p, q, i, j, k) = -1 (for all i=1,...,m; j=1,...,n)$. Meanwhile,
+and $\text{PITC}(p, q, i, j, k) = -1 (\text{for all} i=1,...,m; j=1,...,n)$. Meanwhile,
 
 \[
 w_{p,q,k} = 
@@ -501,23 +498,48 @@ w_{p,q,k} =
 that $w_{p,q,k}$ has its maximum value when $\text{PRMR}(p, q, i, j, k) = 1 (\text{for all} i=1,...,m; j=1,...,n)$ 
 and $\text{PITC}(p, q, i, j, k) = 1 (\text{for all} i=1,...,m; j=1,...,n)$.
   
-\textbf{Positive diagonal elements}: The diagonal elements can be formalized by follows:
+\textbf{Positive diagonal elements}: According to lemma \ref{lemma:pitcrange}, 
+the diagonal elements can be formalized by follows:
 
-\[
-w_{ii} = 
-\sum_{\text{ROI}\in\text{ROIs}}{\left(
-  \frac{\text{ROI}_i\cap\text{ROI}_i}{\text{ROI}_i}
-  \left( \frac{Cov(T_i, T_i; v)}
-      {Cov(T_i, T_i; v)\times Cov(T_i, T_i; v)} + 2 \right)\right)
-} = \sum_{\text{ROI}\in\text{ROIs}}{\text{TV}_i} > 0
-\]
+\begin{equation}
+\begin{aligned}
+w_{p,p,k} &= 
+\sum_{j=1}^{m}{
+\sum_{i=1}^{m}{ 
+  \left(
+    \text{PRMR}(p, p, i, j, k)
+    \left(
+      \text{PITC}(p, p, i, j, k) + 2
+    \right)
+  \right)
+}} \\
+&\geq \sum_{j=1}^{m}{
+\sum_{i=1}^{m}{ \left(
+  \frac{| ROI_{p,i,k} \cap ROI_{p,j,k} | }{|ROI_{p,i,k}|}
+  \left(
+    -1 + 2
+  \right)
+\right)}} \\
+&= \sum_{j=1}^{m}{
+\sum_{i=1}^{m}{
+  \frac{| ROI_{p,i,k} \cap ROI_{p,j,k} | }{|ROI_{p,i,k}|}
+}}\\
+&= \sum_{i=j}{\frac{| ROI_{p,i,k} \cap ROI_{p,j,k} | }{|ROI_{p,i,k}|}} 
+ + \sum_{i\neq j}{\frac{| ROI_{p,i,k} \cap ROI_{p,j,k} | }{|ROI_{p,i,k}|}}\\
+&\geq \sum_{i=j}{\frac{| ROI_{p,i,k} \cap ROI_{p,j,k} | }{|ROI_{p,i,k}|}}\\
+&= \sum_{i=1}^{m}{\frac{| ROI_{p,i,k} \cap ROI_{p,i,k} | }{|ROI_{p,i,k}|}}\\
+&= \sum_{i=1}^{m}{\frac{| ROI_{p,i,k}|}{|ROI_{p,i,k}|}}\\
+&= m > 0
+\end{aligned}
+\end{equation}
 
 \textbf{Column stochastic}: according to the definition of matrix $A$, the sum of the column
 elements are:
-\[
-  \sum_{i}{\frac{w_{ij}}{\sum_{j}{w_{ij}}}} 
-  = \frac{\sum_{i}{w_{ij}}}{\sum_{j}{w_{ij}}} = 1
-\]
+\begin{equation}
+  \sum_{q}{a_{p,q,k}} 
+  = \sum_{q}{ \frac{w_{p,q,k}}{ \sum_{q}{w_{p,q,k}} }}
+  = \frac{\sum_{q}{w_{p,q,k}}}{\sum_{q}{w_{p,q,k}}} = 1
+\end{equation}
 \end{proof}
 
 We have proved the existence and uniqueness of eigenvalues of normalized PRG adjacency matrix; 
