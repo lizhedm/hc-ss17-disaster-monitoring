@@ -24,7 +24,7 @@ This repo contains all project source files of LMU Human Computation Lecture Sum
 - [ ] review chapter 2, verify incentivization
 
 - [x] refine chapter 3 design
-- [ ] review chapter 3, remove wiki references
+- [x] review chapter 3, remove wiki references
 
 - [ ] refine chapter 4 evaluation
 - [ ] review chapter 4

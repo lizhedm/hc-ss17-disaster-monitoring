@@ -68,7 +68,7 @@ The player will accomplish different game tasks; each task result shall store in
 
 \noindent\begin{minipage}{.45\textwidth}
 \begin{lstlisting}[
-    caption={Example of Player Database Data},
+    caption={Example of PlayerDB Data},
     label={lst:playerdb}
 ]
 [
@@ -95,7 +95,7 @@ The player will accomplish different game tasks; each task result shall store in
 \end{minipage}\hfill
 \begin{minipage}{.45\textwidth}
 \begin{lstlisting}[
-  caption={Example of Results Database Data},
+  caption={Example of ResultsDB Data},
   label={lst:resultdb}
 ]
 [
@@ -230,7 +230,7 @@ as illustrated in figure \ref{fig:graph}.
 \emph{
 Assuming the database stores $n$ different tags $\text{tag}_1, \text{tag}_2, ..., \text{tag}_n$ in the system,
 The \textbf{System Weight Vector} $v = (p(\text{tag}_1), p(\text{tag}_2), ..., p(\text{tag}_n))$ 
-\textbf{of all tags} can be calculated by the following equation \ref{eq:ptag}:
+\textbf{of all tags} can be calculated by the following Equation \ref{eq:ptag}:
 \begin{equation}
 \label{eq:ptag}
 p(\text{tag}_i) = \frac{|\text{tag}_i|}{\sum_{j=1}^{n}{|\text{tag}_j|}}
@@ -267,7 +267,7 @@ Obviously, we have $0 \leq p(\text{tag}_i)\leq 1$, $\sum_{i=1}^{n}{p(\text{tag}_
 
 To go so far as to this system, our player have two different type of inputs: \textbf{the \hyperref[def:roi]{ROI}, 
 and its \hyperref[def:tagv]{Tag Vector}}. To define the \hyperref[idx:prg]{PRG} edge weight, 
-we introduce two input measurements in the subsequent definition \ref{def:prmr} and \ref{def:pitc}.
+we introduce two input measurements in the subsequent Definition \ref{def:prmr} and \ref{def:pitc}.
 
 \begin{definition}
 \label{def:prmr}
@@ -296,7 +296,7 @@ where
 \end{equation}
 \end{lemma}
 \begin{proof}
-According to the definition of \hyperref[def:roi]{ROI}, $| ROI_{p,i,k} \cap ROI_{q,j,k} |$ 
+According to the Definition of \hyperref[def:roi]{ROI}, $| ROI_{p,i,k} \cap ROI_{q,j,k} |$ 
 can archive its maximum value only and only if $ROI_{p,i,k} =  ROI_{q,j,k}$ 
 as well as its minimum value only and only if $ROI_{p,i,k}$ has no intersection with $ROI_{q,j,k}$.
 Thus:
@@ -330,10 +330,10 @@ Note that
 \item \textbf{The definition of PRMR and PITC share the same intent for measureing asymmetric importance  
       between player $p$ and player $q$ (how $p$ think of $q$)};
 \item The definition of \textbf{PRMR is inspired by} a wide-used computer vision criteria, the so called \textbf{Intersection over Union (IoU)}, 
-      also as known as \textbf{Jaccard Index} \cite{real1996probabilistic, wiki:JaccardIndex},
+      also as known as \textbf{Jaccard Index} \cite{real1996probabilistic, jaccard1901etude},
       which is a statistic used for comparing the similarity and diversity of sample sets. 
       However, in our case, we only divided by to guarantee the asymmetric property for directed graph weight;
-\item The definition of \textbf{PITC is inspired by the Weighted Pearson Correlation Coefficient} \cite{wiki:PearsonCorrelationCoefficient},
+\item The definition of \textbf{PITC is inspired by the Weighted Pearson Correlation Coefficient} \cite{pearson1895note},
       which is a measure of the linear correlation between two variables. In our case, with the same intent of PRMR, 
       we \textbf{drop} the
       part of covariance of player $q$ in denominator to guarantee the asymmetric property for directed graph weight; 
@@ -349,11 +349,11 @@ $\text{PITC}(p, q, i, j, k) \neq \text{PITC}(q, p, i, j, k)$.
 \end{equation}
 \end{lemma}
 \begin{proof}
-We know that the weighted Pearson Correlation Coefficient \cite{wiki:PearsonCorrelationCoefficient} lies on $[-1, 1]$, i.e.
+We know that the weighted Pearson Correlation Coefficient \cite{pearson1895note} lies on $[-1, 1]$, i.e.
 \[
   -1 \leq \frac{Cov(T_{p,i,k}, T_{q,j,k}; v_k)}{\sqrt{Cov(T_{p,i,k}, T_{p,i,k}; v_k)Cov(T_{q,j,k}, T_{q,j,k}; v_k)}} \leq 1
 \]
-To prove equation \ref{eq:pitcrange}, we have to show:
+To prove Equation \ref{eq:pitcrange}, we have to show:
 \begin{multline}
   \frac{Cov(T_{p,i,k}, T_{q,j,k}; v_k)}{Cov(T_{p,i,k}, T_{p,i,k}; v_k)} \\
   \leq |Cov(T_{q,j,k}, T_{q,j,k}; v_k)\sqrt{Cov(T_{p,i,k}, T_{p,i,k}; v_k)Cov(T_{q,j,k}, T_{q,j,k}; v_k)}| \leq 1
@@ -367,9 +367,10 @@ Then we need to show:
 \begin{equation}
 0 \leq Cov(T_{p,i,k}, T_{p,i,k}; v_k)Cov(T_{q,j,k}, T_{q,j,k}; v_k)^3 \leq 1
 \end{equation}
-Considering $T_{p,i,k}, T_{q,i,k}$ are described in general, with equation \ref{eq:cov}, 
+Considering $T_{p,i,k}, T_{q,i,k}$ are described in general, with Equation \ref{eq:cov}, 
 we only need to show (\textbf{$s$ is an vector components index} instead of exponential):
 \begin{equation}
+\label{eq:statement}
 0 \leq Cov(T_{p,i,k}, T_{p,i,k}; v_k) = 
 \frac{
   \sum_{s=1}^{n}{
@@ -404,11 +405,11 @@ Therefore,
   \sum_{s=1}^{n}{v_{k}^s}
 } = 1
 \end{equation}
-which proves equation \ref{eq:pitcrange}.
+which proves Equation \ref{eq:statement}.
 \end{proof}
 
 Thus far, we have enough techniques to define the edge weight of \hyperref[idx:prg]{PRG}.
-The definition is shown in definition \ref{def:edgeweight}.
+The definition is shown in Definition \ref{def:edgeweight}.
 
 \begin{definition}
 \label{def:edgeweight}
@@ -431,8 +432,8 @@ with player $p$ selected $m$ ROIs, player $q$ selected $n$ ROIs.
 \end{definition}
 
 Our goal is to calculate the centrality of the nodes (players) of the network graph.
-The \textbf{Perron Frobenius theorem} \cite{wiki:PerronFrobeniusTheorem} is a common knowledge that guarantees our goal
-can be drift to the calculation of the adjacency matrix of \hyperref[idx:prg]{PRG}.
+The \textbf{Perron Frobenius theorem}, proved by Oskar Perron (1907) \cite{perron1907theorie} and Georg Frobenius (1912) \cite{frobenius1912matrizen},
+guarantees our goal can be drifted to the calculation of the adjacency matrix of \hyperref[idx:prg]{PRG}.
 In consequence, one can use the normalized adjacency matrix through the following formula \ref{eq:normalize}:
 
 \begin{equation}
@@ -452,13 +453,13 @@ non-negative, column-stochastic, and diagonal element being positive.
 \textbf{Irreducibility}: As shown in figure \ref{fig:graph}, for a certain image $k$, 
 the \hyperref[idx:prg]{PRG} is strong connected because the
 player who selected ROIs in image $k$ has a direct connection to any other player who also selected ROIs in image $k$ 
-(the edge weight is well defined according to equation \ref{eq:weight}).
+(the edge weight is well defined according to Equation \ref{eq:weight}).
 Thus, since $A_k$ is an normalized strong connected PRG adjacency matrix, which proves $A_k$ is irreducible.
 
-\textbf{Real elements}: With lemma \ref{lemma:prmrrange} and \ref{lemma:pitcrange}, each part of the equation \ref{eq:weight} 
-are real number. Thus, of course, the matrix $A_k$ elements are calculated by equation \ref{eq:normalize} that are real elements.
+\textbf{Real elements}: With Lemma \ref{lemma:prmrrange} and \ref{lemma:pitcrange}, each part of the Equation \ref{eq:weight} 
+are real number. Thus, of course, the matrix $A_k$ elements are calculated by Equation \ref{eq:normalize} that are real elements.
 
-\textbf{Non-negative elements}: With lemma \ref{lemma:prmrrange} and \ref{lemma:pitcrange}, we have:
+\textbf{Non-negative elements}: With Lemma \ref{lemma:prmrrange} and \ref{lemma:pitcrange}, we have:
 \[
 w_{p,q,k} = 
 \sum_{j=1}^{n}{
@@ -502,7 +503,7 @@ w_{p,q,k} =
 that $w_{p,q,k}$ has its maximum value when $\text{PRMR}(p, q, i, j, k) = 1 (\text{for all} i=1,...,m; j=1,...,n)$ 
 and $\text{PITC}(p, q, i, j, k) = 1 (\text{for all} i=1,...,m; j=1,...,n)$.
   
-\textbf{Positive diagonal elements}: According to lemma \ref{lemma:pitcrange}, 
+\textbf{Positive diagonal elements}: According to Lemma \ref{lemma:pitcrange}, 
 the diagonal elements can be formalized by follows:
 
 \begin{equation}
@@ -550,7 +551,7 @@ From the proof of property of positive diagonal elements, we see that the number
 a translation that guarantees $\text{PITC}(p, q, i, j, k)$ lies on $[1, 3]$ which helps us
 prove this property successfully.
 
-According to \textbf{Perron Frobenius theorem} \cite{wiki:PerronFrobeniusTheorem} and 
+According to \textbf{Perron Frobenius theorem} \cite{perron1907theorie, frobenius1912matrizen} and 
 Theorem \ref{theorem:property},
 one can infer that there exists an uniqueness eigenvector $V_k = (TV_{1,k}, ..., TV_{n,k})$ of $A_k$,
 the so-called Perron vector, with an uniqueness eigenvalue $\rho(A_k)$ is the spectral	radius
@@ -563,8 +564,10 @@ A_k \cdot V_k = \rho(A_k) \cdot V_k, TV_{i,k} > 0, \sum_{i=1}^{n}{TV_{i,k}} = 1.
 Therefore, we define the trust value of a player:
 
 \begin{definition}
+\emph{
 A \textbf{Trust Value} $TV_{i,k}$ of player $i$ on image $k$ is a score that
 equals to the $i$-th component of the Perron vector of the normalized \hyperref[idx:prg]{PRG} adjacency matrix $A_k$.
+}
 \end{definition}
 
 This definition represents the rating score from player $p$ to player $q$ for a certain image $k$, as same as the centrality
@@ -574,27 +577,27 @@ of the player $q$. With the trust value of players, we propose our classificatio
 \label{algo:malicious}
 \SetAlgoLined
 \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
-\Input{New Player $p$, \\
+\Input{New Player $p$,\\
        Trusted Player $p1, p2, ..., p_m$,\\
-       Task Images $k_1, k_2, ..., k_2n$, 
+       Task Images $k_1, k_2, ..., k_{2n}$,\\
        Acceptance Threshold $\delta$}
 \Output{Reliability of Player $p$}
-  counter = 0;\\
-  \For{$k \in [k_1, k_2, ..., k_2n]$}{
+\Begin{
+  counter $\longleftarrow$ 0\\
+  \For{$k \in [k_1, k_2, ..., k_{2n}]$}{
     \If{$k$ is tagged image}{
-      calculate $TV_{p,k}, TV_{p_1,k}, ..., TV_{p_m,k}$;\\
+      calculate $TV_{p,k}, TV_{p_1,k}, ..., TV_{p_m,k}$\\
       \If{$TV_{p,k} \geq \frac{1}{m}\sum_{i=1}^{m}{TV_{p_i, k}}$}{
-        counter += 1;
+        counter $\longleftarrow$ counter $+ 1$
       }
     }
   }
-  \eIf{$counter \geq \delta$}{
-    return true;
+  \eIf{counter $\geq \delta$}{
+    reliability $\longleftarrow$ true
   }{
-    return false;
+    reliability $\longleftarrow$ false
   }
-  
-
+}
 \caption{Malicious Player Detection Algorithm}
 \end{algorithm}
 
@@ -624,13 +627,14 @@ We also address a solution for this issue via the following steps:
 \subsubsection{Disaster Evaluation Model}
 \label{chapter:dem}
 
-For an area at time $t$, we address the \textbf{\hyperref[idx:dem]{DEM}} 
+For a monitor region at time $t$, we address the \textbf{\hyperref[idx:dem]{DEM}} 
 via disaster level definition as follows:
 
 \begin{definition}
 \label{def:dl}
+\emph{
 Let a monitor region is composed by images $k_1, ..., k_n$, and players $p_1, p_2, ..., p_m$
-are tagged these images. The player $p_j$ tagged $r_{j,k}$ ROIs in image $k$ with $j=1, ..., m; k=1, ..., n$.
+are tagged these images. The player $p_j$ tagged $r_{j,i}$ ROIs in image $k_i$ with $j=1, ..., m; i=1, ..., n$.
 The \textbf{Disaster Level (DL)} of a monitor region is calculated by the following:
 \begin{equation}
 DL = v \cdot 
@@ -645,9 +649,10 @@ DL = v \cdot
 \end{equation}
 with $v$ is the \hyperref[def:weightv]{System Weight Vector} and 
 $ T_{ p_{j}, r_{j,i}, k_{i} } $ is the \hyperref[def:tagv]{Tag Vector} of the $r_{j,i}$-th ROI of player $p_j$ in image $k_i$.
+}
 \end{definition}
 
-With this definition \ref{def:dl}, we can calculate the disaster level for a monitoring region.
+With this Definition \ref{def:dl}, we can calculate the disaster level for a monitoring region.
 In fact, due to the System Weight Vector is a kind of frequency vector of all exist tags, the definition
 is a kind of expectancy of the exist tags of the monitoring region, which gives the disaster level of this region.
 
@@ -661,8 +666,8 @@ In this system, we have only have to consider one system initialization issue of
 
 \begin{figure}[htp]
 \centering
-\includegraphics[width=0.5\columnwidth]{figures/coldstart}
-\caption{Cold Start of \hyperref[idx:ptg]{PTG}}
+\includegraphics[width=0.5\columnwidth]{figures/coldstart2}
+\caption{Initialization of \hyperref[idx:prm]{PRM}}
 \label{fig:cold}
 \end{figure}
 
