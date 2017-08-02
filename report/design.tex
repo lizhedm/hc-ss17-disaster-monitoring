@@ -1,4 +1,4 @@
-\section{Design}
+\section{Design and Models}
 
 In this chapter, we describe the overall design of our disaster monitoring backend system in details.
 Firstly, we propose our system architecture of this disaster monitoring;
@@ -150,9 +150,12 @@ Each object also contains a \emph{ROIs} field, which is an array object that con
 Each ROI object in the ROIs field has four properties that describes the ROI geometric location: \emph{x, y, height, width}, and 
 also a \emph{tags} array field that describes the input tags for this image from this player.
 
-For \emph{tags} field,
-game players select the related tags for each ROI, and stores in this array. \textbf{Each tag can only selects once, 
-and players allow to input their own new tags for this ROI.} Then, We define the ROI tag vector for the model design:
+
+For \emph{tags} field, game players can select the related tags for each ROI, and stores in this array. 
+However, systems like ESP \cite{von2004labeling}, ARTigo \cite{wieser2013artigo} have proved that 
+human inputs are valuable and useful. Therefore we allows player input their own tags. That is, 
+\textbf{each tag can only selects once, and players allow to input their own new tags for the selected ROIs.} 
+Then, We define the ROI tag vector for the model design:
 
 \begin{definition}
 \label{def:tagv}
@@ -404,7 +407,7 @@ Therefore,
 which proves equation \ref{eq:pitcrange}.
 \end{proof}
 
-Thus far, we have enough techniques to define the edge weight of \hyperref[abbr:prg]{PRG}.
+Thus far, we have enough techniques to define the edge weight of \hyperref[idx:prg]{PRG}.
 The definition is shown in definition \ref{def:edgeweight}.
 
 \begin{definition}
@@ -429,7 +432,7 @@ with player $p$ selected $m$ ROIs, player $q$ selected $n$ ROIs.
 
 Our goal is to calculate the centrality of the nodes (players) of the network graph.
 The \textbf{Perron Frobenius theorem} \cite{wiki:PerronFrobeniusTheorem} is a common knowledge that guarantees our goal
-can be drift to the calculation of the adjacency matrix of \hyperref[abbr:prg]{PRG}.
+can be drift to the calculation of the adjacency matrix of \hyperref[idx:prg]{PRG}.
 In consequence, one can use the normalized adjacency matrix through the following formula \ref{eq:normalize}:
 
 \begin{equation}
@@ -440,16 +443,17 @@ A_k = (a_{p,q,k}) = (\frac{w_{p,q,k}}{\sum_{q}{w_{p,q,k}}})
 where $k$ is the image indicator.
 
 \begin{theorem}
-The normalized ajacency matrix $A_k$ of PRG of a certain image $k$ is irreducible, real, 
+\label{theorem:property}
+The normalized adjacency matrix $A_k$ of PRG of a certain image $k$ is irreducible, real, 
 non-negative, column-stochastic, and diagonal element being positive.
 \end{theorem}
 
 \begin{proof}
 \textbf{Irreducibility}: As shown in figure \ref{fig:graph}, for a certain image $k$, 
-the \hyperref[abbr:prg]{PRG} is strong connected because the
+the \hyperref[idx:prg]{PRG} is strong connected because the
 player who selected ROIs in image $k$ has a direct connection to any other player who also selected ROIs in image $k$ 
 (the edge weight is well defined according to equation \ref{eq:weight}).
-Thus, since $A_k$ is an normalized strong connected PRG ajacency matrix, which proves $A_k$ is irreducible.
+Thus, since $A_k$ is an normalized strong connected PRG adjacency matrix, which proves $A_k$ is irreducible.
 
 \textbf{Real elements}: With lemma \ref{lemma:prmrrange} and \ref{lemma:pitcrange}, each part of the equation \ref{eq:weight} 
 are real number. Thus, of course, the matrix $A_k$ elements are calculated by equation \ref{eq:normalize} that are real elements.
@@ -542,78 +546,110 @@ elements are:
 \end{equation}
 \end{proof}
 
-We have proved the existence and uniqueness of eigenvalues of normalized PRG adjacency matrix; 
-one can use the corresponding eigenvalues to represent the trust value of players. Thus, we have:
+From the proof of property of positive diagonal elements, we see that the number ``2'' is 
+a translation that guarantees $\text{PITC}(p, q, i, j, k)$ lies on $[1, 3]$ which helps us
+prove this property successfully.
+
+According to \textbf{Perron Frobenius theorem} \cite{wiki:PerronFrobeniusTheorem} and 
+Theorem \ref{theorem:property},
+one can infer that there exists an uniqueness eigenvector $V_k = (TV_{1,k}, ..., TV_{n,k})$ of $A_k$,
+the so-called Perron vector, with an uniqueness eigenvalue $\rho(A_k)$ is the spectral	radius
+of $A_k$, the so-called Perron root, such that:
+
+\[
+A_k \cdot V_k = \rho(A_k) \cdot V_k, TV_{i,k} > 0, \sum_{i=1}^{n}{TV_{i,k}} = 1.
+\]
+
+Therefore, we define the trust value of a player:
 
 \begin{definition}
-A \textbf{Trust Value} $TV_i$ of player $i$ represents by the $i$-th eigenvalue of normalized PRG ajacency matrix $A$.
+A \textbf{Trust Value} $TV_{i,k}$ of player $i$ on image $k$ is a score that
+equals to the $i$-th component of the Perron vector of the normalized \hyperref[idx:prg]{PRG} adjacency matrix $A_k$.
 \end{definition}
 
-This definition can represent the rating score from $i$ to $j$. With the trust value of players,
-we propose our classification algorithm:
+This definition represents the rating score from player $p$ to player $q$ for a certain image $k$, as same as the centrality
+of the player $q$. With the trust value of players, we propose our classification algorithm:
 
 \begin{algorithm}[H]
 \label{algo:malicious}
 \SetAlgoLined
 \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
-\Input{anonymous IDs, TVs}
-\Output{(anonymous\_id, isReliable)}
-Calculate $TV_{new}$ as the trust value of player $new$ \;
-\eIf{$TV_{new} \geq \frac{1}{|\text{players}|}\sum_{i\in \text{players}}{TV_{i}}$}{
-  return $(\text{anonymous\_id}, \text{true})$
-}{
-  return $(\text{anonymous\_id}, \text{false})$
-}
-\caption{Player Classification Algorithm}
+\Input{New Player $p$, \\
+       Trusted Player $p1, p2, ..., p_m$,\\
+       Task Images $k_1, k_2, ..., k_2n$, 
+       Acceptance Threshold $\delta$}
+\Output{Reliability of Player $p$}
+  counter = 0;\\
+  \For{$k \in [k_1, k_2, ..., k_2n]$}{
+    \If{$k$ is tagged image}{
+      calculate $TV_{p,k}, TV_{p_1,k}, ..., TV_{p_m,k}$;\\
+      \If{$TV_{p,k} \geq \frac{1}{m}\sum_{i=1}^{m}{TV_{p_i, k}}$}{
+        counter += 1;
+      }
+    }
+  }
+  \eIf{$counter \geq \delta$}{
+    return true;
+  }{
+    return false;
+  }
+  
+
+\caption{Malicious Player Detection Algorithm}
 \end{algorithm}
 
-In this algorithm, the criterion of classifying new players performs the action that 
-the trust value of a new player should not be less than the mean value of overall trust value of players, 
+The purpose of this algorithm is simple, the criterion of classifying new players performs the action that 
+the trust value of a new player should not be less than the mean value of overall trust value of players on image $k$, 
 which means the tagging performance of new player should not worth than result performance of former players.
+The acceptance threshold is a customizable parameter that can be set by system manager.
+For instance, if $\delta = 1$, then the new player only need pass one singular image of all tagged images; 
+if $\delta = n$ (half images of the task), then the new player have to pass all tagged images;
 
-Terefore in short, the input and output Data Model of PRM are as follows. For input:\\
-$(\text{anonymous\_id}, \text{area\_id}, \text{time}, \text{ROIs}, \text{tags})$; 
-For model output: 
-$(\text{anonymous\_id}, \text{TV})$.
+Note that sometimes new player carries new tags to the system, this will influence the \hyperref[def:tagv]{Tag Vector} calculation,
+which causes the weight are not computable due to 
+the dimension of the \hyperref[def:tagv]{Tag Vector} of new player and old player inequal.
+We also address a solution for this issue via the following steps:
+
+\begin{itemize}
+\item If a new player does not provide new tag: directly perform the calculation with Algorithm \ref{algo:malicious};
+\item If a new player carries new tags: Directly drop, it is an unreliable result;
+\item If a player carries selected tags and also new tags: 
+  \begin{enumerate}
+    \item Perform the calculation with Algorithm \ref{algo:malicious} without new tags;
+    \item Merge and update all weight vector $v$ via formula \ref{eq:weight} if the player is reliable, 
+    \item Otherwise drop and mark the result is unreliable.
+  \end{enumerate}
+\end{itemize}
 
 \subsubsection{Disaster Evaluation Model}
 \label{chapter:dem}
 
-For an area at time $t$, we address the \textbf{Disaster Evaluation Model (DEM)} 
+For an area at time $t$, we address the \textbf{\hyperref[idx:dem]{DEM}} 
 via disaster level definition as follows:
 
 \begin{definition}
 \label{def:dl}
-The \textbf{Disaster Level (DL)} of a monitor region is calculated by each area components:
-\[
-  DL = \sum_{\text{area}\in\text{region}}{DL_{\text{area}}}
-\]
-where $DL_{\text{area}}$ is calculated by its corresponding tag vector:
-\[
-  DL_{\text{area}} = \sum_{i=1}^{n}{v_i \times |\text{tag}_i|}
-\]
-with $n$ is the number of current exist tags, and $|\text{tag}_i|$ is the occurrance of $\text{tag}_i$
-in the corresponding area.
+Let a monitor region is composed by images $k_1, ..., k_n$, and players $p_1, p_2, ..., p_m$
+are tagged these images. The player $p_j$ tagged $r_{j,k}$ ROIs in image $k$ with $j=1, ..., m; k=1, ..., n$.
+The \textbf{Disaster Level (DL)} of a monitor region is calculated by the following:
+\begin{equation}
+DL = v \cdot 
+  \left(
+    \frac{1}{m}
+    \sum_{j=1}^{m}{
+      \sum_{i=1}^{n}{
+          T_{ p_{j}, r_{j,i}, k_{i} }
+      }
+    }
+  \right)
+\end{equation}
+with $v$ is the \hyperref[def:weightv]{System Weight Vector} and 
+$ T_{ p_{j}, r_{j,i}, k_{i} } $ is the \hyperref[def:tagv]{Tag Vector} of the $r_{j,i}$-th ROI of player $p_j$ in image $k_i$.
 \end{definition}
 
-System like ESP \cite{von2004labeling}, ARTigo \cite{wieser2013artigo} has proved that 
-human inputs are valuable and useful.
-
-Note that sometimes player carries new tags for our system, we also address a solution 
-for this issue via the following steps:
-
-\begin{itemize}
-\item When a player carries predefined tags: Trivial;
-\item When a player carries new tags: Directly drop, it is an unreliable result;
-\item When a player carries predefined tags and also new tags: calculate the trust value without new tags;
-  merge and update all weight vector $v$ via formula \ref{eq:weight} if the player is reliable, 
-  otherwise drop and mark the result is unreliable.
-\end{itemize}
-
 With this definition \ref{def:dl}, we can calculate the disaster level for a monitoring region.
-To sum up, the input and the output Data Model of DEM addresse as follows. For input:
-$(\text{time})$, $(\text{area\_id})$ or $(\text{area\_id}, \text{time})$; For output:
-$(\text{area\_id}, \text{time}, \text{disaster\_level})$.
+In fact, due to the System Weight Vector is a kind of frequency vector of all exist tags, the definition
+is a kind of expectancy of the exist tags of the monitoring region, which gives the disaster level of this region.
 
 \subsection{Model Initialization}
 \label{chapter:modelinit}
@@ -621,29 +657,26 @@ $(\text{area\_id}, \text{time}, \text{disaster\_level})$.
 A cold start of such a system is a common problem in human computation system that 
 is avoided by hiring people to play or learn as long as 
 the number of users or the quantity of data is insufficient.
-In our system, we have two different cold start problem.
-
-The first cold start problem appears in the PTG. To initialize the whole system, we need to
-address an initial trusted group for PTG; they shall tagging enough initial trusted result
-for PTG and then assign to new upcoming players. When a new player is reliable,
-then the result of this player will become reliable. Meanwhile, the trusted group and 
-available dataset grow larger with this step repeatedly, as shown in figure \ref{fig:cold}.
+In this system, we have only have to consider one system initialization issue of cold start.
 
 \begin{figure}[htp]
 \centering
 \includegraphics[width=0.5\columnwidth]{figures/coldstart}
-\caption{Cold Start of PTG}
+\caption{Cold Start of \hyperref[idx:ptg]{PTG}}
 \label{fig:cold}
 \end{figure}
 
-The second cold start problem appears in PRM. According to the definition \ref{eq:weight} of PRG, the weight
-of PRG was defined by the trust value of all players. Nevertheless, the initial trusted group has
-no trust value. Thus we need an initial value for $TV$. Note that TV\_i is in between of 0 and 1, thus:
+The issue appears in the \hyperref[idx:ptg]{PTG}. 
+To initialize the whole system, we need to address an \textbf{initial trusted group} for \hyperref[idx:ptg]{PTG}; 
+they shall tagging enough initial trusted result for \hyperref[idx:ptg]{PTG} and 
+then assign the tagged images to new upcoming players. 
+In this system, we do not need to hire people to player and keep the system runs well. This is because: 
+when a new player is reliable, then the result of this player will become reliable. 
+Meanwhile, the trusted group and available dataset grow larger with this step repeatedly, 
+as shown in figure \ref{fig:cold}.
 
-\[
-TV_{i}^{\text{init}} = \frac{1}{|\text{players}^{\text{init}}|}
-\]
-
-with $|\text{players}^{init}|$ is the number of initial trusted group. 
-
-\subsection{Discussion on Image Independent Model}
+Thus, the final question of our system relate to the minimum number of the initial trusted group.
+Our Player Rating Model is based on graph centrality calculation, which means we need a (at least) two dimentional matrix
+to perform the overall model calculation. Hence, with the new player, \textbf{the minimum number of the inital trusted group is 1}.
+Then the initial trusted group (one person) with the new player composed to a two dimentional adjacency matrix that makes the model
+computable.
