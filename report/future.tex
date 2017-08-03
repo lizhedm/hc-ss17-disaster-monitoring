@@ -2,74 +2,59 @@
 
 \subsection{Conclusions}
 
-% 在这份报告中，我们提出了一个全面的针对灾难监控的人肉计算系统，并详细讨论了它数学理论基础、所导致的问题和可能的解决方案。
-% 纵观全文，我们在「introduction」一章中简述了基于GWAPs的人肉计算系统的基本动机，介绍了灾难监控存在的基本问题，
-% 探讨了将人肉计算系统应用到灾难监控这个领域，作为人类一方的贡献应该如何设计。
 In this report, we proposed a comprehensive design of a human computation system for disaster monitoring,
 and we discussed its mathematical foundations as well as the possible issues caused by this system,
 then gives few options to solve these issues. 
 
-% 在「functionality」一章中，我们给出了一个提供给玩家和利益相关方的 GWAPs-based 的灾难监控的
-% 人肉计算系统原形，并描述了它必备的功能及交互逻辑。
-% 作为系统实现的思考，我们站在当前工业最高水平的技术栈的角度，探讨了实现这样一个系统所需涉及的技术栈，
-% 以及选择这个技术栈的优势和缺点。
-In the chapter of functionalities, we illustrated a prototype GWAPs-based disaster monitoring
+In the chapter of \hyperref[chapter:func]{Functionalities}, 
+we illustrated a mockup of GWAPs-based disaster monitoring
 human computation system for game players as well as stakeholders, and then described its
-necessary functions and interaction logic. On thoughts of system implementation, we decided to implement 
-this system on the web, probed the possible technology frameworks and pointed out the reason of our choices.
+necessary functions and interaction logic. On thoughts of system implementation, we discussed the possible technology stack of 
+this system on the Web.
 
-% 然后，我们详细描述了整个系统能够顺利并合理运行的全部理论细节，首先通过人工特征定义了一个用于计算玩家可信度的PRM，
-% 描述了在这个模型下，对恶意用户进行检测判断的算法。作为 justification，我们给出了这个模型的合理性证明。
-% 同时，作为聚合可靠用户输入数据的方法，我们给出了将灾难监控区域危险等级的计算转化为用户在监控图片上 tagging 任务的数学模型 DEM。
-% 在这个模型中，我们使用站在贝叶斯观点下处理用户tagging的输入数据，防止了产生过多无用tag的问题。
-% 当然，我们不可避免的需要处理这样一个人肉计算系统的「冷启动」初始化问题。
-% 值得一提的是，在我们提出的系统设计下，启动整个系统理论上只需要非常小数量的可信用户组（两个人）即可。
-Afterward, in the chapter of design, we modeled the entire system theoretically in details that make sure it can run consistently. First of all, we defined a \textbf{Player Rating Model}
-for calculate a trust value of a player via artificial features, and then we put forward an algorithm
+Afterward, in the chapter of \hyperref[chapter:design]{Design and Models}, we modeled the entire system theoretically in details 
+that make sure it can run consistently. 
+First of all, we defined a \textbf{\hyperref[chapter:prm]{Player Rating Model}} based on eingenvalue centralities
+for calculating trust value of a player, and then we put forward an algorithm
 that can be used in malicious user detection. As justification, we proved the correctness of this model.
 Meanwhile, as the data aggregation, we transferred the problem of calculating disaster level of regions into
-processing the expectation value of user tagging task inputs and proposed the \textbf{Disaster Evaluation Model}.
-In this model, we prevented the overabundance problem of potential useless tags from users by standing on the prespective of Bayesian. Surely, we addressed the solution of cold start of the human computation system.
-It is worth mentioning that the minimum initial trusted group under this scheme design only requires two persons theoretically.
+processing the expectancy of user tagging task inputs and proposed the \textbf{\hyperref[chapter:dem]{Disaster Evaluation Model}}.
+Surely, we addressed the solution of cold start of the human computation system.
+It is worth mentioning that the minimum initial trusted group under this scheme design only requires one person theoretically.
 
-% 更进一步的，作为评估，我们首先给出了评价这个系统能够成功运行的的理论标准，然后陈述了这个系统在面临诸如数据安全、
-% 信息泄露、恶意用户检测、用户匮乏以及xxx等问题时的挑战和解决手段。当然，这个目前这个系统还存在一些缺陷，
-% 我们针对评估过期失效、信息丢失和游戏系统的可玩性三个问题进行了分析，并给出了可能的改进方案。
-Furthermore, as evaluation, we discussed theoretical evaluation criteria for this system,
-and then declared the challenges and corresponding solutions for facing issues like data security, information leakage, 
+Furthermore, in the chapter of \hyperref[chapter:evaluation]{Evaluation}, we discussed theoretical evaluation criteria for this system,
+and then declared the challenges and corresponding solutions for facing issues like data security, information leakage and loss, 
 malicious detection as well as the lack of players.
-Undoubtedly, the current system design still contains defects. Thus, we presented three analysis
-and possible improvements for evaluation outdated, information loss and also gameplay playability. 
-
-% 作为对进一步未来工作的思考，我们将在剩下的内容里简单讨论该系统一些可能的扩展形式、以及与其他人肉计算系统的交互。
-For the future works, we will simply discuss the possible extension of our human computation system.
+Undoubtedly, the current system design still contains defects. 
+Thus, we presented three analysis and possible improvements for evaluation outdated 
+and gameplay playability. 
 
 \subsection{Future Works}
 
 Our system was described in general. We collect human inputs by ROI tagging tasks, 
-which means any other HC system that related to ROI tagging tasks can easily use this system backend design.
-In addition, due to the fact that we do not have enough user inputs at present, we use a certainty algorithm instead of 
-uncertainty probablistic-based algorithm to detect malicious groups. 
+which means any other human computation system that related to ROI tagging tasks can easily use this system backend design.
+In addition, due to the fact that we do not have enough user inputs at present, 
+we use a certainty algorithm instead of uncertainty probablistic-based algorithm to detect malicious groups. 
 Considering malicious detection is classification problem, which seperate users into trusted groups and untrusted groups. 
 One can apply any classification machine learning algorithms that are more suitable for the detection of malicious groups 
 if our user input dataset is large enough.
 
-Besides, as we mentioned before, sometimes, the game player may encouter a situation that 
-there is no ROI in some pictures which contain only landscapes like: mountains, rivers and forests.
-In this case, with collaborative computing of image recoginition technique, we can filter out those images 
-from our image database previously so that we can collect more data from the game and 
-make our image tagging game more efficiently.
+Besides, as we mentioned before, the game player may encounter a situation that 
+there is no ROI in some pictures which contain only landscapes like mountains, rivers and forests.
+In this case, the game playability is significantly reduced. However, for future work,
+we can filter out those images from our image database previously with collaborative computing of image recoginition technique,
+so that one can collect more data from the game and make our image tagging game more efficiently.
 
 \section*{Acknowledgements}
 \addcontentsline{toc}{section}{\protect\numberline{}Acknowledgements}
 The authors would like to thank Prof. Fran\c{c}ois Bry first for
-his great suggestions on information leak and loss problems of our disaster monitoring system 
-as well as the model statements;
+his great and important suggestions on the model statements 
+as well as information leak and loss problems of the disaster monitoring system;
 we also thank Yingding Wang for his helpful discussions on system functionalities design 
 and the model rationalizations as well as evaluations;
 Finally, we also thank our schoolmate Huimin An for his inspiration of Bayesian perspective that
 helps us handling human inputs with new tags successfully.
 
-The resources of this project such as paper \LaTeX code, mockup drafts as well as
-lab session beamer slides are open source on GitHub: \\
+The resources of this project are open source on GitHub, such as paper \LaTeX~code, mockup drafts as well as
+lab session beamer slides: \\
 \url{https://github.com/changkun/hc-ss17-disaster-monitoring}.

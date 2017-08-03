@@ -1,4 +1,5 @@
 \section{Evaluation}
+\label{chapter:evaluation}
 
 This chapter discusse the evaluation criteria as well as the issues and solutions on social and ethical aspects.
 Surely, our system still has limitations, we then discusse the most important three limitations within our system: 
@@ -44,7 +45,7 @@ his or her contribution to the system is volunteering and the produced data will
 monitoring disasters in Syria.
 
 \textbf{Leakage of data:} 
-We cut big satellite image into small segmentations in our HC system to prevent data leakage to ordinary users, 
+We cut big satellite image into small segmentations in our \hyperref[idx:hc]{HC} system to prevent data leakage to ordinary users, 
 but the \textbf{data security} (TODO: explain here) is still very important and needs to be considered with high priority. For example, 
 the backend database should not be entirely accessible to every employee of UNICEF. 
 Each of them can only visit the part of data that they need at present. This principle is made to guarantee 
@@ -58,7 +59,7 @@ A possible solution for this limitation is to consider new regions that contains
 informations, as shown in figure \ref{fig:information_loss}. Note that this solution that
 only increases the number of region pictures, it does not influence any model and system design.
 
-\begin{figure}[htp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.7\columnwidth]{figures/information_loss3}
 \caption{\textbf{Information Loss}: TODO: fix here. Information loss may occurs on the intersection lines, as shown on the left; a possible solution
@@ -69,6 +70,8 @@ is to provide additional regions (blue rectangles) for these special area as sho
 \subsection{Limitations of the System}
 
 \subsubsection{Evaluation Outdated}
+
+TODO: rewrite this section, gives few time series prediction method.
 
 A limitation occurs in our social network based model is each disaster level evaluation get invalid 
 if the region image is outdated. 
@@ -90,6 +93,8 @@ of disaster level is not stationary but the time series of trust value is statio
 TODO: Fix here by given few prediction method suggestions.
 
 \subsubsection{Gameplay and Playability}
+
+TODO: add image here, rewrite this paragraph.
 
 The GWAP collects satellite photos of disaster areas. But even if in the disaster areas, 
 not every part of the areas has a disaster. Most parts of the earth are lake, forest, 

@@ -1,4 +1,5 @@
 \section{Design and Models}
+\label{chapter:design}
 
 In this chapter, we describe the overall design of our disaster monitoring backend system in details.
 Firstly, we propose our system architecture of this disaster monitoring;
@@ -7,9 +8,9 @@ Then we specify and justify our most critical system components such as database
 as well as \textbf{Disaster Evaluation Model (DEM)\label{idx:dem}}.
 
 With these components, model and databases, the disaster monitoring system can handle
-common problems in HC system, such as cold start, malicious player detection, etc. 
+common problems in human computation system, such as cold start, malicious player detection, etc. 
 It is also expandable, portable and can be easily applied to any other same image selection 
-and tagging based HC system in different areas.
+and tagging based human computation system in different areas.
 
 \subsection{System Architectures}
 
@@ -201,6 +202,7 @@ all images as a user task assign to a new upcoming player.
 \end{itemize}
 
 \subsubsection{Player Rating Model}
+\label{chapter:prm}
 
 This subsection describes the \textbf{\hyperref[idx:prm]{PRM}} as well as its detection algorithm 
 inside our Disaster Monitoring system.
@@ -673,8 +675,9 @@ In this system, we have only have to consider one system initialization issue of
 
 The issue appears in the \hyperref[idx:ptg]{PTG}. 
 To initialize the whole system, we need to address an \textbf{initial trusted group} for \hyperref[idx:ptg]{PTG}; 
-they shall tagging enough initial trusted result for \hyperref[idx:ptg]{PTG} and 
-then assign the tagged images to new upcoming players. 
+they shall tagging enough initial trusted result as well as a fixed predefined tag list 
+(contains all of the most important tags that organisation need to monitoring)
+for \hyperref[idx:ptg]{PTG} and then assign the tagged images to new upcoming players. 
 In this system, we do not need to hire people to player and keep the system runs well. This is because: 
 when a new player is reliable, then the result of this player will become reliable. 
 Meanwhile, the trusted group and available dataset grow larger with this step repeatedly, 
