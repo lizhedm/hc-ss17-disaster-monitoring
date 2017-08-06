@@ -630,6 +630,14 @@ We also address a solution for this issue via the following steps:
 \subsubsection{Disaster Evaluation Model}
 \label{chapter:dem}
 
+Pooling is an useful technique for training Convolutional Neuron Networks \cite{ciresan2011flexible, krizhevsky2012imagenet},
+which combine the outputs of neuron clusters at one layer into a single neuron in the next layer.
+It is a kind of aggregation method for an image region.
+General pooling techniques are mean pooling, max pooling and stochastic pooling.
+The he stochastic pooling uses the weighted average value from 
+each of a cluster of neurons at the prior layer \cite{ciregan2012multi}.
+We shift this technique to define our Disaster Evaluation Model.
+
 For a monitor region at time $t$, we address the \textbf{\hyperref[idx:dem]{DEM}} 
 via disaster level definition as follows:
 
@@ -640,6 +648,7 @@ Let a monitor region is composed by images $k_1, ..., k_n$, and players $p_1, p_
 are tagged these images. The player $p_j$ tagged $r_{j,i}$ ROIs in image $k_i$ with $j=1, ..., m; i=1, ..., n$.
 The \textbf{Disaster Level (DL)} of a monitor region is calculated by the following:
 \begin{equation}
+\label{eq:dl}
 DL = v \cdot 
   \left(
     \frac{1}{m}
@@ -655,9 +664,8 @@ $ T_{ p_{j}, r_{j,i}, k_{i} } $ is the \hyperref[def:tagv]{Tag Vector} of the $r
 }
 \end{definition}
 
-With this Definition \ref{def:dl}, we can calculate the disaster level for a monitoring region.
-In fact, due to the System Weight Vector is a kind of frequency vector of all exist tags, the definition
-is a kind of expectancy of the exist tags of the monitoring region, which gives the disaster level of this region.
+With this Definition \ref{def:dl}, we can calculate the disaster level for a monitoring region 
+according to Equation \ref{eq:dl} directly.
 
 \subsection{Model Initialization}
 \label{chapter:modelinit}
