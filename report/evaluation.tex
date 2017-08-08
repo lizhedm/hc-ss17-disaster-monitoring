@@ -1,39 +1,65 @@
 \section{Evaluation}
+\label{chapter:evaluation}
 
-This chapter discusse the evaluation criteria as well as the issues and solutions on social and ethical aspects.
-Surely, our system still has limitations, we then discusse the most important three limitations within our system: 
-outdated evaluation, information loss and playability.
+This chapter discusses the evaluation criteria with dataset simulation as well as 
+the issues and solutions on social and ethical aspects appears with this system design.
+Surely, our system still has limitations, 
+we then discusse the most important two limitations within our system: 
+evaluation outdated and game playability.
 
 \subsection{Success Criterias}
 
-\subsubsection{Model Evaluation with Random Dataset}
+\subsubsection{Model Evaluation by Simulation}
 
-Malicious player detection is a classification problem. 
-One can generate random data and test the performance of PRM through accuracy and recall, even ROC curve \cite{hanley1982meaning}.
-TODO: explain here.
+In the previous chapter of design and model, we descrived the system data flow, which is
+done by three main step: task generation, malicious player detection and disaster level evaluation as well.
+The second step malicious player detection is essentially a classification problem that 
+our system detect the new player is reliable or not based on \hyperref[def:tv]{Trust Value}.
 
-The click behavior has been researched for years and address by FFitts Law \cite{bi2013ffitts}.
-It modeled and proved the distribution of click behavior for a certain click goal point is a normal distribution.
-Thus, with probablistic view, the top left corner of ROI exists, then the user click selection 
-for this point should follows normal distribution, as shown in figure \ref{fig:evaluation}.
-TODO: explain precisely. also justify the start point is not important.
+To evaluate our model, a typical classification model performance evaluation metric is to 
+using the Receiver Operating Characteristic (ROC) curve \cite{hanley1982meaning}, which 
+plots True Positive (on the y-axis) against False Positive and the ideal area under the curve
+should be 1.
+Nevertheless, before we test the system with real user, one can generate a reaonsable random dataset 
+to test the performance of our classification model (\hyperref[idx:prm]{PRM}).
+
+Our player have two different type of inputs: \textbf{the \hyperref[def:roi]{ROI}, 
+and its \hyperref[def:tagv]{Tag Vector}}. For a reaonsable player data entity, 
+one has to define the ROI selection and its corresponding Tag Vector.
+To generate resonable ROI to simulate real user behavior, we disscuss the click behavior
+of a desktop target click behavior first.
+
+The target click behavior has been researched for years and address by FFitts Law \cite{bi2013ffitts}.
+It modeled and proved the distribution of click behavior for a certain click goal point is a Gaussian distribution \cite{goodman1963statistical}.
+Thus, with frequency statistic view, the actual ROI(s) for a certain exists, 
+and whatever the user start from the top right corner or bottom left corner or etc., 
+according to the FFitts Law, the starting click point should follows normal distribution around the actual point,
+as shown in figure \ref{fig:evaluation}. Similarly, the landing point of the selection of ROI(s)
+should also follows a normal distribution. 
 
 \begin{figure}[htp]
 \centering
 \includegraphics[width=0.5\columnwidth]{figures/evaluation}
-\caption{Data Simulation}
+\caption{Example of ROI Simulation}
 \label{fig:evaluation}
 \end{figure}
 
-Therefore, to generate ROIs, let $(x, y)$ is the player ROI start point,  $(H_{ROI}$, $W_{ROI})$ is the height
-and width pair of this ROI, then we generate the random dataset for these variables by a given
-parameter $\delta$: $(x, y) \sim (x+N(0, \delta), y+N(0, \delta)), (H_{ROI}, W_{ROI}) \sim (H_{ROI}+N(0, \delta), W_{ROI}+N(0, \delta))$.
-To generate tags, we propose randomly pick random number of tags.
+Therefore, to generate ROI(s), let $(x, y)$ is the player ROI starting point, $(H_{ROI}$, $W_{ROI})$ is the height
+and width pair of this ROI, then we generate noise for the ROI starting points and landing points: 
+$(x+\epsilon, y+\epsilon), (H_{ROI}+\epsilon, W_{ROI}+\epsilon)$ and $\epsilon \sim N(0, \delta)$.
+For the paremeter $\delta$, one can use Maximum Likelihood estimator \cite{johansen1990maximum} 
+to perform the inference from all manually ROI selection samples from initial trusted group.
 
-Then one can perform this random dataset on our system to evaluate the classification accuracy and recall rate to
-evaluate the overall performance of this system, which gives the theoretical evaluation results.
+The generation of Tag Vector for a certain image is much simple than ROI's, 
+a randomly pick from initial trusted group is sufficient for the simulation case 
+because these tags are trusted results and a partial randomly selection already introduced the noise in this case.
+
+Eventually, one can perform this random dataset on the system to evaluate area under the ROC curse to
+evaluate the overall performance of this system (the model shows good performance if the value approximate to 1), 
+which gives the theoretical evaluation results.
 
 \subsubsection{Issues on Social and Ethical Aspects}
+\label{chapter:ethical}
 
 \textbf{Intellectual Property Rights:} 
 Our disaster monitoring HC system is an non-commercial project which invites volunteers to contribute to it. 
@@ -43,7 +69,7 @@ his or her contribution to the system is volunteering and the produced data will
 monitoring disasters in Syria.
 
 \textbf{Leakage of data:} 
-We cut big satellite image into small segmentations in our HC system to prevent data leakage to ordinary users, 
+We cut big satellite image into small segmentations in our \hyperref[idx:hc]{HC} system to prevent data leakage to ordinary users, 
 but the \textbf{data security} (TODO: explain here) is still very important and needs to be considered with high priority. For example, 
 the backend database should not be entirely accessible to every employee of UNICEF. 
 Each of them can only visit the part of data that they need at present. This principle is made to guarantee 
@@ -57,9 +83,9 @@ A possible solution for this limitation is to consider new regions that contains
 informations, as shown in figure \ref{fig:information_loss}. Note that this solution that
 only increases the number of region pictures, it does not influence any model and system design.
 
-\begin{figure}[htp]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.7\columnwidth]{figures/information_loss2}
+\includegraphics[width=0.7\columnwidth]{figures/information_loss3}
 \caption{\textbf{Information Loss}: TODO: fix here. Information loss may occurs on the intersection lines, as shown on the left; a possible solution
 is to provide additional regions (blue rectangles) for these special area as shown on the right.}
 \label{fig:information_loss}
@@ -68,6 +94,8 @@ is to provide additional regions (blue rectangles) for these special area as sho
 \subsection{Limitations of the System}
 
 \subsubsection{Evaluation Outdated}
+
+TODO: rewrite this section, gives few time series prediction method.
 
 A limitation occurs in our social network based model is each disaster level evaluation get invalid 
 if the region image is outdated. 
@@ -89,6 +117,8 @@ of disaster level is not stationary but the time series of trust value is statio
 TODO: Fix here by given few prediction method suggestions.
 
 \subsubsection{Gameplay and Playability}
+
+TODO: add image here, rewrite this paragraph.
 
 The GWAP collects satellite photos of disaster areas. But even if in the disaster areas, 
 not every part of the areas has a disaster. Most parts of the earth are lake, forest, 

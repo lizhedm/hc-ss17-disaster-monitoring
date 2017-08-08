@@ -1,9 +1,15 @@
 \documentclass[paper=a4, fontsize=11pt]{scrartcl}
+\usepackage{authblk}
 \usepackage[T1]{fontenc}
 \usepackage{fourier} 
 \usepackage[english]{babel} 
+\usepackage{subcaption}
 \usepackage{amsmath,amsfonts,amsthm} 
-\newtheorem{theorem}{Theorem}
+\usepackage{chngcntr}
+\counterwithout{equation}{subsection}
+\counterwithout{equation}{section}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 \usepackage{mathtools}
@@ -61,26 +67,29 @@
 \newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
 
 % TODO: comment here after finished
-% \usepackage{draftwatermark}
-% \SetWatermarkText{DRAFT}
-% \SetWatermarkScale{1}
+\usepackage{draftwatermark}
+\SetWatermarkText{DRAFT}
+\SetWatermarkScale{1}
 
 \title{	
 \normalfont \normalsize 
 \textsc{Final Team Report for ``Human Computation'', Summer Term 2017, IFI LMU} \\ [25pt]
 \horrule{0.5pt} \\[0.4cm]
 \huge Final Team Report: \\
-A Novel GWAP Disaster Monitoring System\\
+\textmd{A Novel GWAP Disaster Monitoring System}\\
 \horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
 }
 \author{
-  \\ Team: Hotpot\\
-  Changkun Ou\\
-  Yifei Zhan\\
-  Zhe Li\\
-Lercture Human Computation\\
-Institute for Informatics, \\
-Ludwig-Maximilian University of Munich, Germany}
+  \underline{Team \emph{\textsf{Hotpot}}}\\
+  Changkun Ou\textsuperscript{*},
+  Yifei Zhan\textsuperscript{\dag} and
+  Zhe Li\textsuperscript{\ddag}
+}
+\affil{ \normalsize
+  Lercture Human Computation\\
+  \textit{Institute for Informatics, Ludwig-Maximilian University of Munich, Germany}\\
+  \emph{\{changkun.ou\textsuperscript{*}, yifei.zhan\textsuperscript{\dag}, li.zhe\textsuperscript{\ddag}\}@campus.lmu.de}
+}
 \date{\today}
 
 \begin{document}
@@ -92,9 +101,10 @@ Ludwig-Maximilian University of Munich, Germany}
 Disaster Monitoring is a challanging problem due to the lack of infrastructures in the disaster areas.
 This report contributes to Disaster Monitoring with the description of a Game With A Purpose (GWAP), 
 which analyzes tagging results from players from satellite pictures and exports aggregated results to Disaster Monitoring stakeholders. 
-We illustrate our system prototype and implementation technology stack, as well as the mathematical model of the scheme. 
-As justification and evaluation, we prove the correctness of the model, 
-discusse issues caused by this system and possible solutions as well as extensions for future works.
+We illustrate our system mockup with proposed implementation technology stack first, 
+then we gives the mathematical model of system scheme.
+As justification and evaluation, we prove the correctness of the model, discusse issues caused by this system 
+and possible solutions extensions for future works as well.
 
 \input{introduction}
 \input{functionality}
@@ -104,6 +114,6 @@ discusse issues caused by this system and possible solutions as well as extensio
 
 \nocite{*}
 \addcontentsline{toc}{section}{\protect\numberline{}References}
-\bibliographystyle{alpha}
+\bibliographystyle{unsrt}
 \bibliography{ref}
 \end{document}
