@@ -567,6 +567,7 @@ A_k \cdot V_k = \rho(A_k) \cdot V_k, TV_{i,k} > 0, \sum_{i=1}^{n}{TV_{i,k}} = 1.
 Therefore, we define the trust value of a player:
 
 \begin{definition}
+\label{def:tv}
 \emph{
 A \textbf{Trust Value} $TV_{i,k}$ of player $i$ on image $k$ is a score that
 equals to the $i$-th component of the Perron vector of the normalized \hyperref[idx:prg]{PRG} adjacency matrix $A_k$.
@@ -697,3 +698,7 @@ Our Player Rating Model is based on graph centrality calculation, which means we
 to perform the overall model calculation. Hence, with the new player, \textbf{the minimum number of the inital trusted group is 1}.
 Then the initial trusted group (one person) with the new player composed to a two dimentional adjacency matrix that makes the model
 computable.
+
+\subsection{Model Discussion}
+
+TODO: brief disscuss the image independent model is not suitable
