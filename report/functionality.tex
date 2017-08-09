@@ -13,7 +13,7 @@ who wants to dispatch their rescue teams in disaster area more properly.
 
 \subsubsection{Disaster Monitoring Game Introduction}
 The idea behind our human computation system is \hyperref[idx:gwap]{GWAP}.
-We have sketched a mockup of image tagging game,
+We have sketched mockups of an image tagging game,
 which is similar to the ESP game on Artigo \cite{wieser2013artigo}.
 In our game,
 A player can finish infinity round tasks, 
@@ -50,7 +50,9 @@ the player also has a choice to add multiple tags to one picture,
 or he/she dosen't need to add any tags when he/she thinks that this region is safe.
 After finishing one tagging task, 
 the player will be directed to the next task till the end of the game.
-
+\subsubsection{Game incentivization}
+The main incentivization of our Disaster Monitoring Game is altruism. In other words, everyone is willing to help others. 
+Under this consideration and also the consideration of transparency, besides the game guide ,we suggest to provide "acknowledgement page" to the player after he/she finished playing our game. This page contains some information about our research group, the status quo of the disaster region and what is contribution of the player. By offering the player with such a page, we hope our players feel more motivated.
 \subsubsection{Example: Interaction Journey}
 In this section,
 An example of a user journey is provided in order to illustrate the game process.
@@ -60,7 +62,7 @@ An example of a user journey is provided in order to illustrate the game process
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/function-player-0}
-        \label{fig:player0}
+        \label{fig:player}
         \caption{Overview}
     \end{subfigure}
     \hfill
@@ -79,7 +81,7 @@ are a side bar on the left side,
 which contains some information like:
 user ID,
 game guide and a reference library,
-and a main panel on the right side (Figure \ref{fig:player0}).
+and a main panel on the right side (Figure \ref{fig:player}).
 If user A finds a sign of damage or danger in the picture on the right side.
 He can click the button ``add marks'' and then hs is able to draw a rectangle area which indicates the location of the sign.
 A selection box will then pop out automatically and user A can select the suited item or add a new tag (Figure \ref{fig:player1}).
@@ -110,9 +112,14 @@ i.e.
 tagging the first picture,
 he can click the button ``save and to the next picture'' so that he can save the tags and go to the next task.
 Figure \ref{fig:player3} illustrates how a reference library can be,
-whose aim is to help user A to identify different signs of danger or damage.
+whose aim is to help user A to identify different signs of danger or damage. And the acknowledgement page will be provided in the end of the game (Figure \ref{fig:player4})
 
-TODO: where is the final incentivization picture?
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{figures/function-player-4}
+\caption{The acknowledgement page}
+\label{fig:player4}
+\end{figure}
 
 \subsection{Functionalities as Seen by a Stakeholder}
 In our disaster monitoring system, 
