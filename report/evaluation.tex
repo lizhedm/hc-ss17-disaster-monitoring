@@ -61,7 +61,6 @@ which gives the theoretical evaluation results.
 \subsubsection{Issues on Social and Ethical Aspects}
 \label{chapter:ethical}
 
-\textbf{Intellectual Property Rights:} 
 Our disaster monitoring HC system is an non-commercial project which invites volunteers to contribute to it. 
 It is used to help the UNICEF and other non-profit organizations deliver supplies in disaster areas safer. 
 So the IPR on the annotations should not belong to the volunteer users. In an appropriate manner, user will be informed that 
@@ -69,9 +68,9 @@ his or her contribution to the system is volunteering and the produced data will
 monitoring disasters in Syria.
 
 \textbf{Leakage of data:} 
-We cut big satellite image into small segmentations in our \hyperref[idx:hc]{HC} system to prevent data leakage to ordinary users, 
-but the \textbf{data security} (TODO: explain here) is still very important and needs to be considered with high priority. For example, 
-the backend database should not be entirely accessible to every employee of UNICEF. 
+The users may get important geographic information which should not be leaked from the satellite images. So we cut big image into small segmentations in our HC system to prevent data leakage to ordinary users. 
+The \textbf{data security} is also very important and needs to be considered with high priority on the side of stackholders. For example, 
+the backend database should not be entirely accessible to every employee of UNICEF or any other organization running the system.
 Each of them can only visit the part of data that they need at present. This principle is made to guarantee 
 that data will not be wrongly used and will be included in our future work.
 
